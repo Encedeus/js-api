@@ -42,6 +42,14 @@ enum SetPfpErrors {
     OK = 200,
 }
 
+type CreateUserDTO = {
+    name: string;
+    email: string;
+    password: string;
+    roleId: number;
+    roleName: string;
+}
+
 type UpdateUserDTO = {
     id: string,
     name: string,
@@ -58,8 +66,8 @@ export class UsersService {
         this.api = axiosInstance;
     }
 
-    public async createUser(user: User): Promise<CreateUserErrors> {
-        const resp = await this.api.post("/users", user);
+    public async createUser(createUserDto: CreateUserDTO): Promise<CreateUserErrors> {
+        const resp = await this.api.post("/users", createUserDto);
         return CreateUserErrors[resp.status] as unknown as CreateUserErrors;
     }
 
