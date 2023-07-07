@@ -1,7 +1,8 @@
 {
   "name": "@encedeus/js-api",
-  "version": "0.0.2",
-  "types": "../types/index.d.ts",
+  "version": "0.0.4",
+  "types": "./types/index.d.ts",
+  "main": "./src/index.ts",
   "dependencies": {
     "@types/axios": "^0.14.0",
     "axios": "^1.4.0"
