@@ -14,6 +14,9 @@ export class EncedeusAPI {
     private constructor(apiBaseURL: string) {
         this.axiosInstance = axios.create({
             baseURL: apiBaseURL,
+            headers: {
+                "Content-Type": "application/json",
+            },
         });
         this._usersService = new UsersService(this.axiosInstance);
         this._roleService = new RoleService(this.axiosInstance);
