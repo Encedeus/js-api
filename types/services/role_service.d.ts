@@ -14,6 +14,10 @@ export declare enum GetRoleErrors {
     INTERNAL_SERVER_ERROR = 500,
     OK = 200
 }
+export type GetRoleResponse = {
+    role?: Role;
+    error: GetRoleErrors;
+};
 export declare enum UpdateRoleErrors {
     UNAUTHORISED = 401,
     BAD_REQUEST = 400,
@@ -39,10 +43,7 @@ export declare class RoleService {
     private api;
     constructor(axiosInstance: AxiosInstance);
     createRole(role: Role): Promise<CreateRoleErrors>;
-    getRole(roleId: number): Promise<{
-        role?: Role;
-        error: GetRoleErrors;
-    }>;
+    getRole(roleId: number): Promise<GetRoleResponse>;
     updateRole(updateRoleDto: UpdateRoleDTO): Promise<UpdateRoleErrors>;
     deleteRole(roleId: number): Promise<DeleteRoleErrors>;
 }

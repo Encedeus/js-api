@@ -17,6 +17,11 @@ export enum GetRoleErrors {
     OK = 200,
 }
 
+export type GetRoleResponse = {
+    role?: Role;
+    error: GetRoleErrors;
+}
+
 export enum UpdateRoleErrors {
     UNAUTHORISED = 401,
     BAD_REQUEST = 400,
@@ -53,7 +58,7 @@ export class RoleService {
         return CreateRoleErrors[resp.status] as unknown as CreateRoleErrors;
     }
 
-    public async getRole(roleId: number): Promise<{ role?: Role; error: GetRoleErrors; }> {
+    public async getRole(roleId: number): Promise<GetRoleResponse> {
         const resp = await this.api.get(`/role/:${roleId}`);
         if (resp.status === 200) {
             return {

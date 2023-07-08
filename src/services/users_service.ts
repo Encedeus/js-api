@@ -86,7 +86,7 @@ export class UsersService {
         return DeleteUserErrors[resp.status] as unknown as DeleteUserErrors;
     }
 
-    public async setPfp(userId: string, pfp: Blob) {
+    public async setPfp(userId: string, pfp: Blob): Promise<SetPfpErrors> {
         const resp = await this.api.put("/users", {
             uuid: userId,
             file: pfp,

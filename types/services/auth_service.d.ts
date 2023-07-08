@@ -11,22 +11,24 @@ export declare enum LoginUserErrors {
     INTERNAL_SERVER_ERROR = 500,
     OK = 201
 }
+export type LoginUserResponse = {
+    error: LoginUserErrors;
+    tokens?: {
+        accessToken: string;
+        refreshToken: string;
+    };
+};
 export declare enum RefreshAccessTokenErrors {
     INVALID_REFRESH_TOKEN = 401,
     OK = 200
 }
+export type RefreshAccessTokenResponse = {
+    accessToken?: string;
+    error: RefreshAccessTokenErrors;
+};
 export declare class AuthService {
     private api;
     constructor(axiosInstance: AxiosInstance);
-    loginUser(userLogin: UserLoginDTO): Promise<{
-        error: LoginUserErrors;
-        tokens?: {
-            accessToken: string;
-            refreshToken: string;
-        };
-    }>;
-    refreshAccessToken(): Promise<{
-        accessToken?: string;
-        error: RefreshAccessTokenErrors;
-    }>;
+    loginUser(userLogin: UserLoginDTO): Promise<LoginUserResponse>;
+    refreshAccessToken(): Promise<RefreshAccessTokenResponse>;
 }

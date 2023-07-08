@@ -14,10 +14,24 @@ export enum LoginUserErrors {
     OK = 201,
 }
 
+export type LoginUserResponse = {
+    error: LoginUserErrors;
+    tokens?: {
+        accessToken: string;
+        refreshToken: string
+    }
+}
+
 export enum RefreshAccessTokenErrors {
     INVALID_REFRESH_TOKEN = 401,
     OK = 200,
 }
+
+export type RefreshAccessTokenResponse = {
+    accessToken?: string;
+    error: RefreshAccessTokenErrors
+}
+
 
 export class AuthService {
     private api: AxiosInstance;
@@ -26,7 +40,7 @@ export class AuthService {
         this.api = axiosInstance;
     }
 
-    public async loginUser(userLogin: UserLoginDTO): Promise<{ error: LoginUserErrors; tokens?: { accessToken: string; refreshToken: string } }> {
+    public async loginUser(userLogin: UserLoginDTO): Promise<LoginUserResponse> {
         const resp = await this.api.post("/auth/login", userLogin);
         if (resp.status === 200) {
             return {
@@ -43,7 +57,7 @@ export class AuthService {
         };
     }
 
-    public async refreshAccessToken(): Promise<{ accessToken?: string; error: RefreshAccessTokenErrors }> {
+    public async refreshAccessToken(): Promise<RefreshAccessTokenResponse> {
         const resp = await this.api.get("/auth/refresh");
         if (resp.status !== 200) {
             return {
