@@ -1,21 +1,21 @@
 import { AxiosInstance } from "axios";
 
-type UserLoginDTO = {
+export type UserLoginDTO = {
     email?: string,
     username? :string,
     password: string,
 }
 
-enum LoginUserErrors {
-    BAD_REQUEST = 400,
-    USER_NOT_FOUND = 404,
+export enum LoginUserErrors {
+    USERNAME_OR_EMAIL_NOT_SPECIFIED = 400,
+    WRONG_EMAIL_OR_USERNAME = 404,
+    WRONG_PASSWORD = 401,
     INTERNAL_SERVER_ERROR = 500,
-    UNAUTHORISED = 401,
     OK = 201,
 }
 
-enum RefreshAccessTokenErrors {
-    UNAUTHORISED = 401,
+export enum RefreshAccessTokenErrors {
+    INVALID_REFRESH_TOKEN = 401,
     OK = 200,
 }
 
@@ -47,7 +47,7 @@ export class AuthService {
         const resp = await this.api.get("/auth/refresh");
         if (resp.status !== 200) {
             return {
-                error: RefreshAccessTokenErrors.UNAUTHORISED,
+                error: RefreshAccessTokenErrors.INVALID_REFRESH_TOKEN,
             }
         }
 

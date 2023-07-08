@@ -1,7 +1,7 @@
 import { AxiosInstance } from "axios";
 import { User } from "../types/user";
 
-enum CreateUserErrors {
+export enum CreateUserErrors {
     ROLE_NOT_FOUND = 404,
     USERNAME_TAKEN = 409,
     INTERNAL_SERVER_ERROR = 500,
@@ -10,14 +10,14 @@ enum CreateUserErrors {
     OK = 201,
 }
 
-enum GetUserErrors {
+export enum GetUserErrors {
     USER_NOT_FOUND = 404,
     USER_DELETED = 410,
     INTERNAL_SERVER_ERROR = 500,
     OK = 200,
 }
 
-enum UpdateUserErrors {
+export enum UpdateUserErrors {
     UNAUTHORISED = 401,
     BAD_REQUEST = 400,
     ROLE_NOT_FOUND = 404,
@@ -26,7 +26,7 @@ enum UpdateUserErrors {
     OK = 200,
 }
 
-enum DeleteUserErrors {
+export enum DeleteUserErrors {
     UNAUTHORISED = 401,
     BAD_REQUEST = 400,
     USER_NOT_FOUND = 404,
@@ -35,14 +35,14 @@ enum DeleteUserErrors {
     OK = 200,
 }
 
-enum SetPfpErrors {
+export enum SetPfpErrors {
     UNAUTHORISED = 401,
     BAD_REQUEST = 400,
     USER_NOT_FOUND = 404,
     OK = 200,
 }
 
-type CreateUserDTO = {
+export type CreateUserDTO = {
     name: string;
     email: string;
     password: string;
@@ -50,7 +50,7 @@ type CreateUserDTO = {
     roleName: string;
 }
 
-type UpdateUserDTO = {
+export type UpdateUserDTO = {
     id: string,
     name: string,
     email: string,

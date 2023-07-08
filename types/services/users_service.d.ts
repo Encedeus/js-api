@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-declare enum CreateUserErrors {
+export declare enum CreateUserErrors {
     ROLE_NOT_FOUND = 404,
     USERNAME_TAKEN = 409,
     INTERNAL_SERVER_ERROR = 500,
@@ -7,13 +7,13 @@ declare enum CreateUserErrors {
     BAD_REQUEST = 400,
     OK = 201
 }
-declare enum GetUserErrors {
+export declare enum GetUserErrors {
     USER_NOT_FOUND = 404,
     USER_DELETED = 410,
     INTERNAL_SERVER_ERROR = 500,
     OK = 200
 }
-declare enum UpdateUserErrors {
+export declare enum UpdateUserErrors {
     UNAUTHORISED = 401,
     BAD_REQUEST = 400,
     ROLE_NOT_FOUND = 404,
@@ -21,7 +21,7 @@ declare enum UpdateUserErrors {
     INTERNAL_SERVER_ERROR = 500,
     OK = 200
 }
-declare enum DeleteUserErrors {
+export declare enum DeleteUserErrors {
     UNAUTHORISED = 401,
     BAD_REQUEST = 400,
     USER_NOT_FOUND = 404,
@@ -29,20 +29,20 @@ declare enum DeleteUserErrors {
     INTERNAL_SERVER_ERROR = 500,
     OK = 200
 }
-declare enum SetPfpErrors {
+export declare enum SetPfpErrors {
     UNAUTHORISED = 401,
     BAD_REQUEST = 400,
     USER_NOT_FOUND = 404,
     OK = 200
 }
-type CreateUserDTO = {
+export type CreateUserDTO = {
     name: string;
     email: string;
     password: string;
     roleId: number;
     roleName: string;
 };
-type UpdateUserDTO = {
+export type UpdateUserDTO = {
     id: string;
     name: string;
     email: string;
@@ -59,4 +59,3 @@ export declare class UsersService {
     deleteUser(userId: string): Promise<DeleteUserErrors>;
     setPfp(userId: string, pfp: Blob): Promise<SetPfpErrors>;
 }
-export {};

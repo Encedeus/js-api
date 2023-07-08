@@ -1,18 +1,18 @@
 import { AxiosInstance } from "axios";
-type UserLoginDTO = {
+export type UserLoginDTO = {
     email?: string;
     username?: string;
     password: string;
 };
-declare enum LoginUserErrors {
-    BAD_REQUEST = 400,
-    USER_NOT_FOUND = 404,
+export declare enum LoginUserErrors {
+    USERNAME_OR_EMAIL_NOT_SPECIFIED = 400,
+    WRONG_EMAIL_OR_USERNAME = 404,
+    WRONG_PASSWORD = 401,
     INTERNAL_SERVER_ERROR = 500,
-    UNAUTHORISED = 401,
     OK = 201
 }
-declare enum RefreshAccessTokenErrors {
-    UNAUTHORISED = 401,
+export declare enum RefreshAccessTokenErrors {
+    INVALID_REFRESH_TOKEN = 401,
     OK = 200
 }
 export declare class AuthService {
@@ -30,4 +30,3 @@ export declare class AuthService {
         error: RefreshAccessTokenErrors;
     }>;
 }
-export {};

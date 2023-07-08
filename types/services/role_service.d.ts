@@ -1,20 +1,20 @@
 import { AxiosInstance } from "axios";
 import { Role } from "../types/role";
-declare enum CreateRoleErrors {
-    UNAUTHORISED = 401,
+export declare enum CreateRoleErrors {
+    MISSING_USER_PERMISSION = 401,
     BAD_REQUEST = 400,
     ROLE_NOT_FOUND = 404,
     INTERNAL_SERVER_ERROR = 500,
     OK = 201
 }
-declare enum GetRoleErrors {
+export declare enum GetRoleErrors {
     ROLE_DELETED = 410,
     BAD_REQUEST = 400,
     ROLE_NOT_FOUND = 404,
     INTERNAL_SERVER_ERROR = 500,
     OK = 200
 }
-declare enum UpdateRoleErrors {
+export declare enum UpdateRoleErrors {
     UNAUTHORISED = 401,
     BAD_REQUEST = 400,
     ROLE_NOT_FOUND = 404,
@@ -22,7 +22,7 @@ declare enum UpdateRoleErrors {
     INTERNAL_SERVER_ERROR = 500,
     OK = 200
 }
-declare enum DeleteRoleErrors {
+export declare enum DeleteRoleErrors {
     UNAUTHORISED = 401,
     BAD_REQUEST = 400,
     ROLE_NOT_FOUND = 404,
@@ -30,7 +30,7 @@ declare enum DeleteRoleErrors {
     INTERNAL_SERVER_ERROR = 500,
     OK = 200
 }
-type UpdateRoleDTO = {
+export type UpdateRoleDTO = {
     name: string;
     permissions: string[];
     id: number;
@@ -46,4 +46,3 @@ export declare class RoleService {
     updateRole(updateRoleDto: UpdateRoleDTO): Promise<UpdateRoleErrors>;
     deleteRole(roleId: number): Promise<DeleteRoleErrors>;
 }
-export {};

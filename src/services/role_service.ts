@@ -1,15 +1,15 @@
 import { AxiosInstance } from "axios";
 import { Role } from "../types/role";
 
-enum CreateRoleErrors {
-    UNAUTHORISED = 401,
+export enum CreateRoleErrors {
+    MISSING_USER_PERMISSION = 401,
     BAD_REQUEST = 400,
     ROLE_NOT_FOUND = 404,
     INTERNAL_SERVER_ERROR = 500,
     OK = 201,
 }
 
-enum GetRoleErrors {
+export enum GetRoleErrors {
     ROLE_DELETED = 410,
     BAD_REQUEST = 400,
     ROLE_NOT_FOUND = 404,
@@ -17,7 +17,7 @@ enum GetRoleErrors {
     OK = 200,
 }
 
-enum UpdateRoleErrors {
+export enum UpdateRoleErrors {
     UNAUTHORISED = 401,
     BAD_REQUEST = 400,
     ROLE_NOT_FOUND = 404,
@@ -26,7 +26,7 @@ enum UpdateRoleErrors {
     OK = 200,
 }
 
-enum DeleteRoleErrors {
+export enum DeleteRoleErrors {
     UNAUTHORISED = 401,
     BAD_REQUEST = 400,
     ROLE_NOT_FOUND = 404,
@@ -35,7 +35,7 @@ enum DeleteRoleErrors {
     OK = 200,
 }
 
-type UpdateRoleDTO = {
+export type UpdateRoleDTO = {
     name: string;
     permissions: string[];
     id: number;
