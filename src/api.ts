@@ -11,11 +11,12 @@ export class EncedeusAPI {
     private _roleService: RoleService;
     private _authService: AuthService;
 
-    private constructor(apiBaseURL: string) {
+    private constructor(apiBaseURL: string, accessToken: string) {
         this.axiosInstance = axios.create({
             baseURL: apiBaseURL,
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`
             },
         });
         this._usersService = new UsersService(this.axiosInstance);
@@ -23,9 +24,9 @@ export class EncedeusAPI {
         this._authService = new AuthService(this.axiosInstance);
     }
 
-    public static getInstance(apiBaseURL: string) {
+    public static getInstance(apiBaseURL: string, accessToken: string) {
         if (!this.instance) {
-            this.instance = new EncedeusAPI(apiBaseURL);
+            this.instance = new EncedeusAPI(apiBaseURL, accessToken);
         }
         return this.instance;
     }

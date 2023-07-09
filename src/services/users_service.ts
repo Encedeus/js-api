@@ -67,22 +67,22 @@ export class UsersService {
     }
 
     public async createUser(createUserDto: CreateUserDTO): Promise<CreateUserErrors> {
-        const resp = await this.api.post("/users", createUserDto);
+        const resp = await this.api.post("/users", createUserDto).catch(err => err.response);
         return CreateUserErrors[resp.status] as unknown as CreateUserErrors;
     }
 
     public async getUserById(userId: string): Promise<GetUserErrors> {
-        const resp = await this.api.get(`/users/${userId}`);
+        const resp = await this.api.get(`/users/${userId}`).catch(err => err.response);
         return GetUserErrors[resp.status] as unknown as GetUserErrors;
     }
 
     public async updateUser(updateUserDto: UpdateUserDTO): Promise<UpdateUserErrors> {
-        const resp = await this.api.patch("/users", updateUserDto);
+        const resp = await this.api.patch("/users", updateUserDto).catch(err => err.response);
         return UpdateUserErrors[resp.status] as unknown as UpdateUserErrors;
     }
 
     public async deleteUser(userId: string): Promise<DeleteUserErrors> {
-        const resp = await this.api.delete(`/users/${userId}`);
+        const resp = await this.api.delete(`/users/${userId}`).catch(err => err.response);
         return DeleteUserErrors[resp.status] as unknown as DeleteUserErrors;
     }
 
@@ -94,7 +94,7 @@ export class UsersService {
             headers: {
                 "Content-Type": "multipart/form-data",
             }
-        });
+        }).catch(err => err.response);
         return SetPfpErrors[resp.status] as unknown as SetPfpErrors;
     }
 }

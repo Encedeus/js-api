@@ -41,7 +41,7 @@ export class AuthService {
     }
 
     public async loginUser(userLogin: UserLoginDTO): Promise<LoginUserResponse> {
-        const resp = await this.api.post("/auth/login", userLogin);
+        const resp = await this.api.post("/auth/login", userLogin).catch(err => err.response);
         if (resp.status === 200) {
             return {
                 error: LoginUserErrors.OK,
@@ -58,7 +58,7 @@ export class AuthService {
     }
 
     public async refreshAccessToken(): Promise<RefreshAccessTokenResponse> {
-        const resp = await this.api.get("/auth/refresh");
+        const resp = await this.api.get("/auth/refresh").catch(err => err.response);
         if (resp.status !== 200) {
             return {
                 error: RefreshAccessTokenErrors.INVALID_REFRESH_TOKEN,

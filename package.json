@@ -1,14 +1,14 @@
 {
   "name": "@encedeus/js-api",
-  "version": "0.0.10",
+  "version": "0.0.13",
   "types": "./types/index.d.ts",
   "main": "./src/index.ts",
   "dependencies": {
-    "@types/axios": "^0.14.0",
     "axios": "^1.4.0"
   },
   "type": "module",
   "devDependencies": {
+    "@types/axios": "^0.14.0",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "@typescript-eslint/parser": "^5.61.0",
     "eslint": "^8.44.0",

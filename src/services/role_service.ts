@@ -54,12 +54,12 @@ export class RoleService {
     }
 
     public async createRole(role: Role): Promise<CreateRoleErrors> {
-        const resp = await this.api.post("/role", role);
+        const resp = await this.api.post("/role", role).catch(err => err.response);
         return CreateRoleErrors[resp.status] as unknown as CreateRoleErrors;
     }
 
     public async getRole(roleId: number): Promise<GetRoleResponse> {
-        const resp = await this.api.get(`/role/:${roleId}`);
+        const resp = await this.api.get(`/role/:${roleId}`).catch(err => err.response);
         if (resp.status === 200) {
             return {
                 role: new Role()
@@ -77,12 +77,12 @@ export class RoleService {
     }
 
     public async updateRole(updateRoleDto: UpdateRoleDTO): Promise<UpdateRoleErrors> {
-        const resp = await this.api.patch("/role", updateRoleDto);
+        const resp = await this.api.patch("/role", updateRoleDto).catch(err => err.response);
         return UpdateRoleErrors[resp.status] as unknown as UpdateRoleErrors;
     }
 
     public async deleteRole(roleId: number): Promise<DeleteRoleErrors> {
-        const resp = await this.api.delete(`/role/:${roleId}`);
+        const resp = await this.api.delete(`/role/:${roleId}`).catch(err => err.response);
         return DeleteRoleErrors[resp.status] as unknown as DeleteRoleErrors;
     }
 }
