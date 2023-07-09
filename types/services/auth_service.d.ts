@@ -13,10 +13,7 @@ export declare enum LoginUserErrors {
 }
 export type LoginUserResponse = {
     error: LoginUserErrors;
-    tokens?: {
-        accessToken: string;
-        refreshToken: string;
-    };
+    accessToken?: string;
 };
 export declare enum RefreshAccessTokenErrors {
     INVALID_REFRESH_TOKEN = 401,

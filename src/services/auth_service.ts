@@ -16,10 +16,7 @@ export enum LoginUserErrors {
 
 export type LoginUserResponse = {
     error: LoginUserErrors;
-    tokens?: {
-        accessToken: string;
-        refreshToken: string
-    }
+    accessToken?: string;
 }
 
 export enum RefreshAccessTokenErrors {
@@ -45,10 +42,7 @@ export class AuthService {
         if (resp.status === 200) {
             return {
                 error: LoginUserErrors.OK,
-                tokens: {
-                    accessToken: resp.data.accessToken,
-                    refreshToken: resp.data.refreshToken,
-                }
+                accessToken: resp.data.accessToken,
             };
         }
 

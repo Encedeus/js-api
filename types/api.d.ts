@@ -8,7 +8,7 @@ export declare class EncedeusAPI {
     private _roleService;
     private _authService;
     private constructor();
-    static getInstance(apiBaseURL: string): EncedeusAPI;
+    static getInstance(apiBaseURL: string, accessToken: string): EncedeusAPI;
     get usersService(): UsersService;
     get roleService(): RoleService;
     get authService(): AuthService;
