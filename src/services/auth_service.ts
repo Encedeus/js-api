@@ -39,7 +39,7 @@ export class AuthService {
 
     public async loginUser(userLogin: UserLoginDTO): Promise<LoginUserResponse> {
         const resp = await this.api.post("/auth/login", userLogin).catch(err => err.response);
-        if (resp.status === 200) {
+        if (resp.status === 201) {
             return {
                 error: LoginUserErrors.OK,
                 accessToken: resp.data.accessToken,
