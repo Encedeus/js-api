@@ -52,7 +52,9 @@ export class AuthService {
     }
 
     public async refreshAccessToken(): Promise<RefreshAccessTokenResponse> {
-        const resp = await this.api.get("/auth/refresh").catch(err => err.response);
+        const resp = await this.api.get("/auth/refresh", {
+            withCredentials: true,
+        }).catch(err => err.response);
         if (resp.status !== 200) {
             return {
                 error: RefreshAccessTokenErrors.INVALID_REFRESH_TOKEN,
