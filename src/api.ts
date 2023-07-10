@@ -18,6 +18,7 @@ export class EncedeusAPI {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${accessToken}`
             },
+            withCredentials: true,
         });
         this._usersService = new UsersService(this.axiosInstance);
         this._roleService = new RoleService(this.axiosInstance);
