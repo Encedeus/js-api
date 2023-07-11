@@ -1,4 +1,5 @@
 import { AxiosInstance } from "axios";
+import { User } from "../types/user";
 export declare enum CreateUserErrors {
     ROLE_NOT_FOUND = 404,
     USERNAME_TAKEN = 409,
@@ -50,11 +51,15 @@ export type UpdateUserDTO = {
     roleId: number;
     roleName: number;
 };
+export type GetUserResponse = {
+    error?: GetUserErrors;
+    user?: User;
+};
 export declare class UsersService {
     private api;
     constructor(axiosInstance: AxiosInstance);
     createUser(createUserDto: CreateUserDTO): Promise<CreateUserErrors>;
-    getUserById(userId: string): Promise<GetUserErrors>;
+    getUserById(userId: string): Promise<GetUserResponse>;
     updateUser(updateUserDto: UpdateUserDTO): Promise<UpdateUserErrors>;
     deleteUser(userId: string): Promise<DeleteUserErrors>;
     setPfp(userId: string, pfp: Blob): Promise<SetPfpErrors>;
