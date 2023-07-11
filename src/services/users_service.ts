@@ -59,6 +59,11 @@ export type UpdateUserDTO = {
     roleName: number,
 }
 
+export type GetUserResponse = {
+    error?: GetUserErrors;
+    user?: User;
+}
+
 export class UsersService {
     private api: AxiosInstance;
 
@@ -67,27 +72,36 @@ export class UsersService {
     }
 
     public async createUser(createUserDto: CreateUserDTO): Promise<CreateUserErrors> {
-        const resp = await this.api.post("/users", createUserDto).catch(err => err.response);
+        const resp = await this.api.post("/user", createUserDto).catch(err => err.response);
         return CreateUserErrors[resp.status] as unknown as CreateUserErrors;
     }
 
-    public async getUserById(userId: string): Promise<GetUserErrors> {
-        const resp = await this.api.get(`/users/${userId}`).catch(err => err.response);
-        return GetUserErrors[resp.status] as unknown as GetUserErrors;
+    public async getUserById(userId: string): Promise<GetUserResponse> {
+        const resp = await this.api.get(`/user/${userId}`).catch(err => err.response);
+
+        if(resp.status === 200) {
+            return {
+                user: <User>resp.data,
+            };
+        }
+
+        return {
+            error: GetUserErrors[resp.status] as unknown as GetUserErrors,
+        };
     }
 
     public async updateUser(updateUserDto: UpdateUserDTO): Promise<UpdateUserErrors> {
-        const resp = await this.api.patch("/users", updateUserDto).catch(err => err.response);
+        const resp = await this.api.patch("/user", updateUserDto).catch(err => err.response);
         return UpdateUserErrors[resp.status] as unknown as UpdateUserErrors;
     }
 
     public async deleteUser(userId: string): Promise<DeleteUserErrors> {
-        const resp = await this.api.delete(`/users/${userId}`).catch(err => err.response);
+        const resp = await this.api.delete(`/user/${userId}`).catch(err => err.response);
         return DeleteUserErrors[resp.status] as unknown as DeleteUserErrors;
     }
 
     public async setPfp(userId: string, pfp: Blob): Promise<SetPfpErrors> {
-        const resp = await this.api.put("/users", {
+        const resp = await this.api.put("/user", {
             uuid: userId,
             file: pfp,
         }, {

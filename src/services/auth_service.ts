@@ -17,6 +17,7 @@ export enum LoginUserErrors {
 export type LoginUserResponse = {
     error: LoginUserErrors;
     accessToken?: string;
+    refreshToken?: string;
 }
 
 export enum RefreshAccessTokenErrors {
@@ -43,6 +44,7 @@ export class AuthService {
             return {
                 error: LoginUserErrors.OK,
                 accessToken: resp.data.accessToken,
+                refreshToken: resp.data.refreshToken,
             };
         }
 
@@ -51,9 +53,11 @@ export class AuthService {
         };
     }
 
-    public async refreshAccessToken(): Promise<RefreshAccessTokenResponse> {
+    public async refreshAccessToken(refreshToken: string): Promise<RefreshAccessTokenResponse> {
         const resp = await this.api.get("/auth/refresh", {
-            withCredentials: true,
+            headers: {
+                "Authorization": `Bearer ${refreshToken}`,
+            },
         }).catch(err => err.response);
         if (resp.status !== 200) {
             return {

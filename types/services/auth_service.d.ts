@@ -14,6 +14,7 @@ export declare enum LoginUserErrors {
 export type LoginUserResponse = {
     error: LoginUserErrors;
     accessToken?: string;
+    refreshToken?: string;
 };
 export declare enum RefreshAccessTokenErrors {
     INVALID_REFRESH_TOKEN = 401,
@@ -27,5 +28,5 @@ export declare class AuthService {
     private api;
     constructor(axiosInstance: AxiosInstance);
     loginUser(userLogin: UserLoginDTO): Promise<LoginUserResponse>;
-    refreshAccessToken(): Promise<RefreshAccessTokenResponse>;
+    refreshAccessToken(refreshToken: string): Promise<RefreshAccessTokenResponse>;
 }

@@ -59,7 +59,7 @@ export class RoleService {
     }
 
     public async getRole(roleId: number): Promise<GetRoleResponse> {
-        const resp = await this.api.get(`/role/:${roleId}`).catch(err => err.response);
+        const resp = await this.api.get(`/role/${roleId}`).catch(err => err.response);
         if (resp.status === 200) {
             return {
                 role: new Role()
