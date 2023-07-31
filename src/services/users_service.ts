@@ -7,14 +7,12 @@ export enum CreateUserErrors {
     INTERNAL_SERVER_ERROR = 500,
     UNAUTHORISED = 401,
     BAD_REQUEST = 400,
-    OK = 201,
 }
 
 export enum GetUserErrors {
     USER_NOT_FOUND = 404,
     USER_DELETED = 410,
     INTERNAL_SERVER_ERROR = 500,
-    OK = 200,
 }
 
 export enum UpdateUserErrors {
@@ -23,7 +21,6 @@ export enum UpdateUserErrors {
     ROLE_NOT_FOUND = 404,
     USER_DELETED = 410,
     INTERNAL_SERVER_ERROR = 500,
-    OK = 200,
 }
 
 export enum DeleteUserErrors {
@@ -32,17 +29,15 @@ export enum DeleteUserErrors {
     USER_NOT_FOUND = 404,
     USER_DELETED = 410,
     INTERNAL_SERVER_ERROR = 500,
-    OK = 200,
 }
 
 export enum SetPfpErrors {
     UNAUTHORISED = 401,
     BAD_REQUEST = 400,
     USER_NOT_FOUND = 404,
-    OK = 200,
 }
 
-export type CreateUserDTO = {
+export type CreateUserDto = {
     name: string;
     email: string;
     password: string;
@@ -50,7 +45,7 @@ export type CreateUserDTO = {
     roleName: string;
 }
 
-export type UpdateUserDTO = {
+export type UpdateUserDto = {
     id: string,
     name: string,
     email: string,
@@ -60,7 +55,7 @@ export type UpdateUserDTO = {
 }
 
 export type GetUserResponse = {
-    error?: GetUserErrors;
+    error?: GetUserErrors | null;
     user?: User;
 }
 
@@ -71,7 +66,7 @@ export class UsersService {
         this.api = axiosInstance;
     }
 
-    public async createUser(createUserDto: CreateUserDTO): Promise<CreateUserErrors> {
+    public async createUser(createUserDto: CreateUserDto): Promise<CreateUserErrors> {
         const resp = await this.api.post("/user", createUserDto).catch(err => err.response);
         return CreateUserErrors[resp.status] as unknown as CreateUserErrors;
     }
@@ -90,7 +85,7 @@ export class UsersService {
         };
     }
 
-    public async updateUser(updateUserDto: UpdateUserDTO): Promise<UpdateUserErrors> {
+    public async updateUser(updateUserDto: UpdateUserDto): Promise<UpdateUserErrors> {
         const resp = await this.api.patch("/user", updateUserDto).catch(err => err.response);
         return UpdateUserErrors[resp.status] as unknown as UpdateUserErrors;
     }

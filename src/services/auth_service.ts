@@ -1,6 +1,6 @@
 import { AxiosInstance } from "axios";
 
-export type UserLoginDTO = {
+export type UserLoginDto = {
     email?: string,
     username? :string,
     password: string,
@@ -11,25 +11,25 @@ export enum LoginUserErrors {
     WRONG_EMAIL_OR_USERNAME = 404,
     WRONG_PASSWORD = 401,
     INTERNAL_SERVER_ERROR = 500,
-    OK = 201,
 }
 
 export type LoginUserResponse = {
-    error: LoginUserErrors;
+    error?: LoginUserErrors | null;
     accessToken?: string;
-    refreshToken?: string;
 }
 
 export enum RefreshAccessTokenErrors {
     INVALID_REFRESH_TOKEN = 401,
-    OK = 200,
 }
 
 export type RefreshAccessTokenResponse = {
     accessToken?: string;
-    error: RefreshAccessTokenErrors
+    error?: RefreshAccessTokenErrors | null
 }
 
+export enum LogoutErrors {
+    UNAUTHORISED = 401,
+}
 
 export class AuthService {
     private api: AxiosInstance;
@@ -38,27 +38,21 @@ export class AuthService {
         this.api = axiosInstance;
     }
 
-    public async loginUser(userLogin: UserLoginDTO): Promise<LoginUserResponse> {
+    public async loginUser(userLogin: UserLoginDto): Promise<LoginUserResponse> {
         const resp = await this.api.post("/auth/login", userLogin).catch(err => err.response);
-        if (resp.status === 201) {
+        if (resp?.status === 201) {
             return {
-                error: LoginUserErrors.OK,
                 accessToken: resp.data.accessToken,
-                refreshToken: resp.data.refreshToken,
             };
         }
 
         return {
-            error: LoginUserErrors[resp.status] as unknown as LoginUserErrors,
+            error: LoginUserErrors[resp?.status] as unknown as LoginUserErrors,
         };
     }
 
-    public async refreshAccessToken(refreshToken: string): Promise<RefreshAccessTokenResponse> {
-        const resp = await this.api.get("/auth/refresh", {
-            headers: {
-                "Authorization": `Bearer ${refreshToken}`,
-            },
-        }).catch(err => err.response);
+    public async refreshAccessToken(): Promise<RefreshAccessTokenResponse> {
+        const resp = await this.api.get("/auth/refresh").catch(err => err.response);
         if (resp.status !== 200) {
             return {
                 error: RefreshAccessTokenErrors.INVALID_REFRESH_TOKEN,
@@ -67,7 +61,15 @@ export class AuthService {
 
         return {
             accessToken: resp.data.accessToken,
-            error: RefreshAccessTokenErrors.OK,
         };
+    }
+
+    public async logout(): Promise<LogoutErrors | null> {
+        const resp = await this.api.delete("/auth/logout").catch(err => err.response);
+        if (resp.status !== 200) {
+            return LogoutErrors.UNAUTHORISED;
+        }
+
+        return null;
     }
 }

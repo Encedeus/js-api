@@ -5,45 +5,40 @@ export declare enum CreateUserErrors {
     USERNAME_TAKEN = 409,
     INTERNAL_SERVER_ERROR = 500,
     UNAUTHORISED = 401,
-    BAD_REQUEST = 400,
-    OK = 201
+    BAD_REQUEST = 400
 }
 export declare enum GetUserErrors {
     USER_NOT_FOUND = 404,
     USER_DELETED = 410,
-    INTERNAL_SERVER_ERROR = 500,
-    OK = 200
+    INTERNAL_SERVER_ERROR = 500
 }
 export declare enum UpdateUserErrors {
     UNAUTHORISED = 401,
     BAD_REQUEST = 400,
     ROLE_NOT_FOUND = 404,
     USER_DELETED = 410,
-    INTERNAL_SERVER_ERROR = 500,
-    OK = 200
+    INTERNAL_SERVER_ERROR = 500
 }
 export declare enum DeleteUserErrors {
     UNAUTHORISED = 401,
     BAD_REQUEST = 400,
     USER_NOT_FOUND = 404,
     USER_DELETED = 410,
-    INTERNAL_SERVER_ERROR = 500,
-    OK = 200
+    INTERNAL_SERVER_ERROR = 500
 }
 export declare enum SetPfpErrors {
     UNAUTHORISED = 401,
     BAD_REQUEST = 400,
-    USER_NOT_FOUND = 404,
-    OK = 200
+    USER_NOT_FOUND = 404
 }
-export type CreateUserDTO = {
+export type CreateUserDto = {
     name: string;
     email: string;
     password: string;
     roleId: number;
     roleName: string;
 };
-export type UpdateUserDTO = {
+export type UpdateUserDto = {
     id: string;
     name: string;
     email: string;
@@ -52,15 +47,15 @@ export type UpdateUserDTO = {
     roleName: number;
 };
 export type GetUserResponse = {
-    error?: GetUserErrors;
+    error?: GetUserErrors | null;
     user?: User;
 };
 export declare class UsersService {
     private api;
     constructor(axiosInstance: AxiosInstance);
-    createUser(createUserDto: CreateUserDTO): Promise<CreateUserErrors>;
+    createUser(createUserDto: CreateUserDto): Promise<CreateUserErrors>;
     getUserById(userId: string): Promise<GetUserResponse>;
-    updateUser(updateUserDto: UpdateUserDTO): Promise<UpdateUserErrors>;
+    updateUser(updateUserDto: UpdateUserDto): Promise<UpdateUserErrors>;
     deleteUser(userId: string): Promise<DeleteUserErrors>;
     setPfp(userId: string, pfp: Blob): Promise<SetPfpErrors>;
 }

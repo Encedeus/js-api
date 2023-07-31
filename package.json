@@ -1,6 +1,6 @@
 {
   "name": "@encedeus/js-api",
-  "version": "0.0.31",
+  "version": "0.0.37",
   "types": "./types/index.d.ts",
   "main": "./src/index.ts",
   "dependencies": {

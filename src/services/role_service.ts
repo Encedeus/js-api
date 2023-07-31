@@ -6,7 +6,6 @@ export enum CreateRoleErrors {
     BAD_REQUEST = 400,
     ROLE_NOT_FOUND = 404,
     INTERNAL_SERVER_ERROR = 500,
-    OK = 201,
 }
 
 export enum GetRoleErrors {
@@ -14,12 +13,11 @@ export enum GetRoleErrors {
     BAD_REQUEST = 400,
     ROLE_NOT_FOUND = 404,
     INTERNAL_SERVER_ERROR = 500,
-    OK = 200,
 }
 
 export type GetRoleResponse = {
     role?: Role;
-    error: GetRoleErrors;
+    error?: GetRoleErrors | null;
 }
 
 export enum UpdateRoleErrors {
@@ -28,7 +26,6 @@ export enum UpdateRoleErrors {
     ROLE_NOT_FOUND = 404,
     ROLE_DELETED = 410,
     INTERNAL_SERVER_ERROR = 500,
-    OK = 200,
 }
 
 export enum DeleteRoleErrors {
@@ -37,10 +34,9 @@ export enum DeleteRoleErrors {
     ROLE_NOT_FOUND = 404,
     ROLE_DELETED = 410,
     INTERNAL_SERVER_ERROR = 500,
-    OK = 200,
 }
 
-export type UpdateRoleDTO = {
+export type UpdateRoleDto = {
     name: string;
     permissions: string[];
     id: number;
@@ -67,7 +63,6 @@ export class RoleService {
                     .setPermissions(resp.data.permissions)
                     .setCreatedAt(new Date(resp.data.createdAt))
                     .setUpdatedAt(new Date(resp.data.updatedAt)),
-                error: GetRoleErrors.OK,
             }
         }
 
@@ -76,7 +71,7 @@ export class RoleService {
         }
     }
 
-    public async updateRole(updateRoleDto: UpdateRoleDTO): Promise<UpdateRoleErrors> {
+    public async updateRole(updateRoleDto: UpdateRoleDto): Promise<UpdateRoleErrors> {
         const resp = await this.api.patch("/role", updateRoleDto).catch(err => err.response);
         return UpdateRoleErrors[resp.status] as unknown as UpdateRoleErrors;
     }
