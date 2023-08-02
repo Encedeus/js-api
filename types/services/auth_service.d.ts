@@ -1,33 +1,29 @@
 import { AxiosInstance } from "axios";
-export type UserLoginDto = {
+import { BadRequestError, InternalServerError, ResourceNotFoundError, UnauthorisedError } from "./errors";
+export declare type UsernameOrEmailNotSpecifiedError = BadRequestError;
+export declare type WrongEmailOrUsernameError = ResourceNotFoundError;
+export declare type WrongPasswordError = UnauthorisedError;
+export declare type InvalidRefreshTokenError = UnauthorisedError;
+export declare type SignInUserError = UsernameOrEmailNotSpecifiedError | WrongEmailOrUsernameError | WrongPasswordError | InternalServerError | null;
+export declare type RefreshAccessTokenError = InvalidRefreshTokenError | null;
+export declare type SignOutError = UnauthorisedError | null;
+export declare type SignInUserResponse = {
+    error?: SignInUserError;
+    accessToken?: string;
+};
+export declare type RefreshAccessTokenResponse = {
+    accessToken?: string;
+    error?: RefreshAccessTokenError;
+};
+export declare type UserSignInDto = {
     email?: string;
     username?: string;
     password: string;
 };
-export declare enum LoginUserErrors {
-    USERNAME_OR_EMAIL_NOT_SPECIFIED = 400,
-    WRONG_EMAIL_OR_USERNAME = 404,
-    WRONG_PASSWORD = 401,
-    INTERNAL_SERVER_ERROR = 500
-}
-export type LoginUserResponse = {
-    error?: LoginUserErrors | null;
-    accessToken?: string;
-};
-export declare enum RefreshAccessTokenErrors {
-    INVALID_REFRESH_TOKEN = 401
-}
-export type RefreshAccessTokenResponse = {
-    accessToken?: string;
-    error?: RefreshAccessTokenErrors | null;
-};
-export declare enum LogoutErrors {
-    UNAUTHORISED = 401
-}
 export declare class AuthService {
     private api;
     constructor(axiosInstance: AxiosInstance);
-    loginUser(userLogin: UserLoginDto): Promise<LoginUserResponse>;
+    signInUser(userLogin: UserSignInDto): Promise<SignInUserResponse>;
     refreshAccessToken(): Promise<RefreshAccessTokenResponse>;
-    logout(): Promise<LogoutErrors | null>;
+    signOut(): Promise<SignOutError>;
 }

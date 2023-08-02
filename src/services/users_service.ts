@@ -1,41 +1,23 @@
 import { AxiosInstance } from "axios";
 import { User } from "../types/user";
+import {
+    BadRequestError,
+    ConflictError,
+    InternalServerError,
+    ResourceNotFoundError, ResourcePermanentlyDeletedError,
+    UnauthorisedError
+} from "./errors";
+import { RoleNotFoundError } from "./role_service";
 
-export enum CreateUserErrors {
-    ROLE_NOT_FOUND = 404,
-    USERNAME_TAKEN = 409,
-    INTERNAL_SERVER_ERROR = 500,
-    UNAUTHORISED = 401,
-    BAD_REQUEST = 400,
-}
+export type UsernameTakenError = ConflictError;
+export type UserNotFoundError = ResourceNotFoundError;
+export type UserDeletedError = ResourcePermanentlyDeletedError;
 
-export enum GetUserErrors {
-    USER_NOT_FOUND = 404,
-    USER_DELETED = 410,
-    INTERNAL_SERVER_ERROR = 500,
-}
-
-export enum UpdateUserErrors {
-    UNAUTHORISED = 401,
-    BAD_REQUEST = 400,
-    ROLE_NOT_FOUND = 404,
-    USER_DELETED = 410,
-    INTERNAL_SERVER_ERROR = 500,
-}
-
-export enum DeleteUserErrors {
-    UNAUTHORISED = 401,
-    BAD_REQUEST = 400,
-    USER_NOT_FOUND = 404,
-    USER_DELETED = 410,
-    INTERNAL_SERVER_ERROR = 500,
-}
-
-export enum SetPfpErrors {
-    UNAUTHORISED = 401,
-    BAD_REQUEST = 400,
-    USER_NOT_FOUND = 404,
-}
+export type CreateUserError = RoleNotFoundError | UsernameTakenError | UnauthorisedError | BadRequestError | InternalServerError | null;
+export type FindUserError = UserNotFoundError | UserDeletedError | InternalServerError | null;
+export type UpdateUserError = UnauthorisedError | BadRequestError | RoleNotFoundError | UserDeletedError | InternalServerError | null;
+export type SetPfpError = UnauthorisedError | BadRequestError | UserNotFoundError | InternalServerError | null;
+export type DeleteUserError = UnauthorisedError | BadRequestError | UserDeletedError | UserNotFoundError | InternalServerError | null;
 
 export type CreateUserDto = {
     name: string;
@@ -54,48 +36,121 @@ export type UpdateUserDto = {
     roleName: number,
 }
 
-export type GetUserResponse = {
-    error?: GetUserErrors | null;
+export type FindUserResponse = {
+    error?: FindUserError;
     user?: User;
 }
 
 export class UsersService {
     private api: AxiosInstance;
 
-    public constructor(axiosInstance: AxiosInstance) {
+    constructor(axiosInstance: AxiosInstance) {
         this.api = axiosInstance;
     }
 
-    public async createUser(createUserDto: CreateUserDto): Promise<CreateUserErrors> {
+    async createUser(createUserDto: CreateUserDto): Promise<CreateUserError> {
         const resp = await this.api.post("/user", createUserDto).catch(err => err.response);
-        return CreateUserErrors[resp.status] as unknown as CreateUserErrors;
+        let error: CreateUserError = null;
+
+        switch (resp.status) {
+        case 404:
+            error = new ResourceNotFoundError(resp.data.message);
+            break;
+        case 409:
+            error = new ConflictError(resp.data.message);
+            break;
+        case 401:
+            error = new UnauthorisedError(resp.data.message);
+            break;
+        case 400:
+            error = new BadRequestError(resp.data.message);
+            break;
+        case 500:
+            error = new InternalServerError(resp.data.message);
+            break;
+        }
+
+        return error;
     }
 
-    public async getUserById(userId: string): Promise<GetUserResponse> {
+    async findUserById(userId: string): Promise<FindUserResponse> {
         const resp = await this.api.get(`/user/${userId}`).catch(err => err.response);
 
         if(resp.status === 200) {
             return {
-                user: <User>resp.data,
+                user: resp.data as User,
             };
         }
 
+        let error: FindUserError = null;
+        switch (resp.status) {
+        case 404:
+            error = new ResourceNotFoundError(resp.data.message);
+            break;
+        case 410:
+            error = new ResourcePermanentlyDeletedError(resp.data.message);
+            break;
+        case 500:
+            error = new InternalServerError(resp.data.message);
+            break;
+        }
+
         return {
-            error: GetUserErrors[resp.status] as unknown as GetUserErrors,
+            error,
         };
     }
 
-    public async updateUser(updateUserDto: UpdateUserDto): Promise<UpdateUserErrors> {
+    async updateUser(updateUserDto: UpdateUserDto): Promise<UpdateUserError> {
         const resp = await this.api.patch("/user", updateUserDto).catch(err => err.response);
-        return UpdateUserErrors[resp.status] as unknown as UpdateUserErrors;
+        let error: UpdateUserError = null;
+
+        switch (resp.status) {
+        case 404:
+            error = new ResourceNotFoundError(resp.data.message);
+            break;
+        case 410:
+            error = new ResourcePermanentlyDeletedError(resp.data.message);
+            break;
+        case 401:
+            error = new UnauthorisedError(resp.data.message);
+            break;
+        case 400:
+            error = new BadRequestError(resp.data.message);
+            break;
+        case 500:
+            error = new InternalServerError(resp.data.message);
+            break;
+        }
+
+        return error;
     }
 
-    public async deleteUser(userId: string): Promise<DeleteUserErrors> {
+    async deleteUser(userId: string): Promise<DeleteUserError> {
         const resp = await this.api.delete(`/user/${userId}`).catch(err => err.response);
-        return DeleteUserErrors[resp.status] as unknown as DeleteUserErrors;
+        let error: DeleteUserError = null;
+
+        switch (resp.status) {
+        case 404:
+            error = new ResourceNotFoundError(resp.data.message);
+            break;
+        case 410:
+            error = new ResourcePermanentlyDeletedError(resp.data.message);
+            break;
+        case 401:
+            error = new UnauthorisedError(resp.data.message);
+            break;
+        case 400:
+            error = new BadRequestError(resp.data.message);
+            break;
+        case 500:
+            error = new InternalServerError(resp.data.message);
+            break;
+        }
+
+        return error;
     }
 
-    public async setPfp(userId: string, pfp: Blob): Promise<SetPfpErrors> {
+    async setPfp(userId: string, pfp: Blob): Promise<SetPfpError> {
         const resp = await this.api.put("/user", {
             uuid: userId,
             file: pfp,
@@ -104,6 +159,23 @@ export class UsersService {
                 "Content-Type": "multipart/form-data",
             }
         }).catch(err => err.response);
-        return SetPfpErrors[resp.status] as unknown as SetPfpErrors;
+        let error: SetPfpError = null;
+
+        switch (resp.status) {
+        case 401:
+            error = new UnauthorisedError(resp.data.message);
+            break;
+        case 404:
+            error = new ResourceNotFoundError(resp.data.message);
+            break;
+        case 400:
+            error = new BadRequestError(resp.data.message);
+            break;
+        case 500:
+            error = new InternalServerError(resp.data.message);
+            break;
+        }
+
+        return error;
     }
 }

@@ -1,44 +1,23 @@
 import { AxiosInstance } from "axios";
 import { User } from "../types/user";
-export declare enum CreateUserErrors {
-    ROLE_NOT_FOUND = 404,
-    USERNAME_TAKEN = 409,
-    INTERNAL_SERVER_ERROR = 500,
-    UNAUTHORISED = 401,
-    BAD_REQUEST = 400
-}
-export declare enum GetUserErrors {
-    USER_NOT_FOUND = 404,
-    USER_DELETED = 410,
-    INTERNAL_SERVER_ERROR = 500
-}
-export declare enum UpdateUserErrors {
-    UNAUTHORISED = 401,
-    BAD_REQUEST = 400,
-    ROLE_NOT_FOUND = 404,
-    USER_DELETED = 410,
-    INTERNAL_SERVER_ERROR = 500
-}
-export declare enum DeleteUserErrors {
-    UNAUTHORISED = 401,
-    BAD_REQUEST = 400,
-    USER_NOT_FOUND = 404,
-    USER_DELETED = 410,
-    INTERNAL_SERVER_ERROR = 500
-}
-export declare enum SetPfpErrors {
-    UNAUTHORISED = 401,
-    BAD_REQUEST = 400,
-    USER_NOT_FOUND = 404
-}
-export type CreateUserDto = {
+import { BadRequestError, ConflictError, InternalServerError, ResourceNotFoundError, ResourcePermanentlyDeletedError, UnauthorisedError } from "./errors";
+import { RoleNotFoundError } from "./role_service";
+export declare type UsernameTakenError = ConflictError;
+export declare type UserNotFoundError = ResourceNotFoundError;
+export declare type UserDeletedError = ResourcePermanentlyDeletedError;
+export declare type CreateUserError = RoleNotFoundError | UsernameTakenError | UnauthorisedError | BadRequestError | InternalServerError | null;
+export declare type FindUserError = UserNotFoundError | UserDeletedError | InternalServerError | null;
+export declare type UpdateUserError = UnauthorisedError | BadRequestError | RoleNotFoundError | UserDeletedError | InternalServerError | null;
+export declare type SetPfpError = UnauthorisedError | BadRequestError | UserNotFoundError | InternalServerError | null;
+export declare type DeleteUserError = UnauthorisedError | BadRequestError | UserDeletedError | UserNotFoundError | InternalServerError | null;
+export declare type CreateUserDto = {
     name: string;
     email: string;
     password: string;
     roleId: number;
     roleName: string;
 };
-export type UpdateUserDto = {
+export declare type UpdateUserDto = {
     id: string;
     name: string;
     email: string;
@@ -46,16 +25,16 @@ export type UpdateUserDto = {
     roleId: number;
     roleName: number;
 };
-export type GetUserResponse = {
-    error?: GetUserErrors | null;
+export declare type FindUserResponse = {
+    error?: FindUserError;
     user?: User;
 };
 export declare class UsersService {
     private api;
     constructor(axiosInstance: AxiosInstance);
-    createUser(createUserDto: CreateUserDto): Promise<CreateUserErrors>;
-    getUserById(userId: string): Promise<GetUserResponse>;
-    updateUser(updateUserDto: UpdateUserDto): Promise<UpdateUserErrors>;
-    deleteUser(userId: string): Promise<DeleteUserErrors>;
-    setPfp(userId: string, pfp: Blob): Promise<SetPfpErrors>;
+    createUser(createUserDto: CreateUserDto): Promise<CreateUserError>;
+    findUserById(userId: string): Promise<FindUserResponse>;
+    updateUser(updateUserDto: UpdateUserDto): Promise<UpdateUserError>;
+    deleteUser(userId: string): Promise<DeleteUserError>;
+    setPfp(userId: string, pfp: Blob): Promise<SetPfpError>;
 }

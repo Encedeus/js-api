@@ -3,12 +3,12 @@ import { RoleService } from "./services/role_service";
 import { UsersService } from "./services/users_service";
 export declare class EncedeusAPI {
     private static instance;
-    private axiosInstance;
-    private _usersService;
-    private _roleService;
-    private _authService;
+    private readonly axiosInstance;
+    private readonly _usersService;
+    private readonly _roleService;
+    private readonly _authService;
     private constructor();
-    static getInstance(apiBaseURL: string, axiosConfig: object): EncedeusAPI;
+    static getInstance(apiBaseURL: string, axiosConfig?: object): EncedeusAPI;
     get usersService(): UsersService;
     get roleService(): RoleService;
     get authService(): AuthService;

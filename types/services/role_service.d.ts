@@ -1,36 +1,18 @@
 import { AxiosInstance } from "axios";
 import { Role } from "../types/role";
-export declare enum CreateRoleErrors {
-    MISSING_USER_PERMISSION = 401,
-    BAD_REQUEST = 400,
-    ROLE_NOT_FOUND = 404,
-    INTERNAL_SERVER_ERROR = 500
-}
-export declare enum GetRoleErrors {
-    ROLE_DELETED = 410,
-    BAD_REQUEST = 400,
-    ROLE_NOT_FOUND = 404,
-    INTERNAL_SERVER_ERROR = 500
-}
-export type GetRoleResponse = {
+import { BadRequestError, InternalServerError, ResourceNotFoundError, ResourcePermanentlyDeletedError, UnauthorisedError } from "./errors";
+export declare type MissingUserPermissionError = UnauthorisedError;
+export declare type RoleDeletedError = ResourcePermanentlyDeletedError;
+export declare type RoleNotFoundError = ResourceNotFoundError;
+export declare type CreateRoleError = MissingUserPermissionError | BadRequestError | RoleNotFoundError | InternalServerError | null;
+export declare type FindRoleError = RoleDeletedError | BadRequestError | RoleNotFoundError | InternalServerError | null;
+export declare type UpdateRoleError = UnauthorisedError | BadRequestError | RoleNotFoundError | RoleDeletedError | InternalServerError | null;
+export declare type DeleteRoleError = UnauthorisedError | BadRequestError | RoleNotFoundError | RoleDeletedError | InternalServerError | null;
+export declare type FindRoleResponse = {
     role?: Role;
-    error?: GetRoleErrors | null;
+    error?: FindRoleError;
 };
-export declare enum UpdateRoleErrors {
-    UNAUTHORISED = 401,
-    BAD_REQUEST = 400,
-    ROLE_NOT_FOUND = 404,
-    ROLE_DELETED = 410,
-    INTERNAL_SERVER_ERROR = 500
-}
-export declare enum DeleteRoleErrors {
-    UNAUTHORISED = 401,
-    BAD_REQUEST = 400,
-    ROLE_NOT_FOUND = 404,
-    ROLE_DELETED = 410,
-    INTERNAL_SERVER_ERROR = 500
-}
-export type UpdateRoleDto = {
+export declare type UpdateRoleDto = {
     name: string;
     permissions: string[];
     id: number;
@@ -38,8 +20,8 @@ export type UpdateRoleDto = {
 export declare class RoleService {
     private api;
     constructor(axiosInstance: AxiosInstance);
-    createRole(role: Role): Promise<CreateRoleErrors>;
-    getRole(roleId: number): Promise<GetRoleResponse>;
-    updateRole(updateRoleDto: UpdateRoleDto): Promise<UpdateRoleErrors>;
-    deleteRole(roleId: number): Promise<DeleteRoleErrors>;
+    createRole(role: Role): Promise<CreateRoleError>;
+    getRole(roleId: number): Promise<FindRoleResponse>;
+    updateRole(updateRoleDto: UpdateRoleDto): Promise<UpdateRoleError>;
+    deleteRole(roleId: number): Promise<DeleteRoleError>;
 }

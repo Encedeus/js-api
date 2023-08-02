@@ -5,11 +5,12 @@ import { UsersService } from "./services/users_service";
 
 export class EncedeusAPI {
     private static instance: EncedeusAPI;
-    private axiosInstance: AxiosInstance;
 
-    private _usersService: UsersService;
-    private _roleService: RoleService;
-    private _authService: AuthService;
+    private readonly axiosInstance: AxiosInstance;
+
+    private readonly _usersService: UsersService;
+    private readonly _roleService: RoleService;
+    private readonly _authService: AuthService;
 
     private constructor(apiBaseURL: string, axiosConfig: object) {
         this.axiosInstance = axios.create({
@@ -24,14 +25,14 @@ export class EncedeusAPI {
         this._authService = new AuthService(this.axiosInstance);
     }
 
-    public static getInstance(apiBaseURL: string, axiosConfig: object) {
+    static getInstance(apiBaseURL: string, axiosConfig: object = {}) {
         if (!this.instance) {
             this.instance = new EncedeusAPI(apiBaseURL, axiosConfig);
         }
         return this.instance;
     }
 
-    public get usersService(): UsersService {
+    get usersService(): UsersService {
         return this._usersService;
     }
 

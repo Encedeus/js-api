@@ -1,39 +1,25 @@
 import { AxiosInstance } from "axios";
 import { Role } from "../types/role";
+import {
+    BadRequestError,
+    InternalServerError,
+    ResourceNotFoundError,
+    ResourcePermanentlyDeletedError,
+    UnauthorisedError
+} from "./errors";
 
-export enum CreateRoleErrors {
-    MISSING_USER_PERMISSION = 401,
-    BAD_REQUEST = 400,
-    ROLE_NOT_FOUND = 404,
-    INTERNAL_SERVER_ERROR = 500,
-}
+export type MissingUserPermissionError = UnauthorisedError;
+export type RoleDeletedError = ResourcePermanentlyDeletedError;
+export type RoleNotFoundError = ResourceNotFoundError;
 
-export enum GetRoleErrors {
-    ROLE_DELETED = 410,
-    BAD_REQUEST = 400,
-    ROLE_NOT_FOUND = 404,
-    INTERNAL_SERVER_ERROR = 500,
-}
+export type CreateRoleError = MissingUserPermissionError | BadRequestError | RoleNotFoundError | InternalServerError | null;
+export type FindRoleError = RoleDeletedError | BadRequestError | RoleNotFoundError | InternalServerError | null;
+export type UpdateRoleError = UnauthorisedError | BadRequestError | RoleNotFoundError | RoleDeletedError | InternalServerError | null;
+export type DeleteRoleError = UnauthorisedError | BadRequestError | RoleNotFoundError | RoleDeletedError | InternalServerError | null;
 
-export type GetRoleResponse = {
+export type FindRoleResponse = {
     role?: Role;
-    error?: GetRoleErrors | null;
-}
-
-export enum UpdateRoleErrors {
-    UNAUTHORISED = 401,
-    BAD_REQUEST = 400,
-    ROLE_NOT_FOUND = 404,
-    ROLE_DELETED = 410,
-    INTERNAL_SERVER_ERROR = 500,
-}
-
-export enum DeleteRoleErrors {
-    UNAUTHORISED = 401,
-    BAD_REQUEST = 400,
-    ROLE_NOT_FOUND = 404,
-    ROLE_DELETED = 410,
-    INTERNAL_SERVER_ERROR = 500,
+    error?: FindRoleError;
 }
 
 export type UpdateRoleDto = {
@@ -45,16 +31,33 @@ export type UpdateRoleDto = {
 export class RoleService {
     private api: AxiosInstance;
 
-    public constructor(axiosInstance: AxiosInstance) {
+    constructor(axiosInstance: AxiosInstance) {
         this.api = axiosInstance;
     }
 
-    public async createRole(role: Role): Promise<CreateRoleErrors> {
+    async createRole(role: Role): Promise<CreateRoleError> {
         const resp = await this.api.post("/role", role).catch(err => err.response);
-        return CreateRoleErrors[resp.status] as unknown as CreateRoleErrors;
+        let error: CreateRoleError = null;
+
+        switch (resp.status) {
+        case 401:
+            error = new UnauthorisedError(resp.data.message);
+            break;
+        case 400:
+            error = new BadRequestError(resp.data.message);
+            break;
+        case 404:
+            error = new ResourceNotFoundError(resp.data.message);
+            break;
+        case 500:
+            error = new InternalServerError(resp.data.message);
+            break;
+        }
+
+        return error;
     }
 
-    public async getRole(roleId: number): Promise<GetRoleResponse> {
+    async getRole(roleId: number): Promise<FindRoleResponse> {
         const resp = await this.api.get(`/role/${roleId}`).catch(err => err.response);
         if (resp.status === 200) {
             return {
@@ -63,21 +66,77 @@ export class RoleService {
                     .setPermissions(resp.data.permissions)
                     .setCreatedAt(new Date(resp.data.createdAt))
                     .setUpdatedAt(new Date(resp.data.updatedAt)),
-            }
+            };
+        }
+
+        let error: FindRoleError = null;
+        switch (resp.status) {
+        case 404:
+            error = new ResourceNotFoundError(resp.data.message);
+            break;
+        case 400:
+            error = new BadRequestError(resp.data.message);
+            break;
+        case 410:
+            error = new ResourcePermanentlyDeletedError(resp.data.message);
+            break;
+        case 500:
+            error = new InternalServerError(resp.data.message);
+            break;
         }
 
         return {
-            error: GetRoleErrors[resp.status] as unknown as GetRoleErrors,
-        }
+            error,
+        };
     }
 
-    public async updateRole(updateRoleDto: UpdateRoleDto): Promise<UpdateRoleErrors> {
+    async updateRole(updateRoleDto: UpdateRoleDto): Promise<UpdateRoleError> {
         const resp = await this.api.patch("/role", updateRoleDto).catch(err => err.response);
-        return UpdateRoleErrors[resp.status] as unknown as UpdateRoleErrors;
+
+        let error: UpdateRoleError = null;
+        switch (resp.status) {
+        case 401:
+            error = new UnauthorisedError(resp.data.message);
+            break;
+        case 400:
+            error = new BadRequestError(resp.data.message);
+            break;
+        case 410:
+            error = new ResourcePermanentlyDeletedError(resp.data.message);
+            break;
+        case 404:
+            error = new ResourceNotFoundError(resp.data.message);
+            break;
+        case 500:
+            error = new InternalServerError(resp.data.message);
+            break;
+        }
+
+        return error;
     }
 
-    public async deleteRole(roleId: number): Promise<DeleteRoleErrors> {
+    async deleteRole(roleId: number): Promise<DeleteRoleError> {
         const resp = await this.api.delete(`/role/:${roleId}`).catch(err => err.response);
-        return DeleteRoleErrors[resp.status] as unknown as DeleteRoleErrors;
+
+        let error: DeleteRoleError = null;
+        switch (resp.status) {
+        case 401:
+            error = new UnauthorisedError(resp.data.message);
+            break;
+        case 400:
+            error = new BadRequestError(resp.data.message);
+            break;
+        case 410:
+            error = new ResourcePermanentlyDeletedError(resp.data.message);
+            break;
+        case 404:
+            error = new ResourceNotFoundError(resp.data.message);
+            break;
+        case 500:
+            error = new InternalServerError(resp.data.message);
+            break;
+        }
+
+        return error;
     }
 }
