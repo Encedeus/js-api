@@ -16,7 +16,7 @@ export type ErrorCheck = HttpError | number;
 
 export type ErrorCheckResponse = {
     ok: boolean;
-    error: HttpError | null;
+    error?: HttpError;
 }
 
 export const InternalServerError = new HttpError(500, "InternalServerError", "Internal server error");

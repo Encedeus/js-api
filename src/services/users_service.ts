@@ -40,7 +40,6 @@ export function isDeleteUserError(err: ErrorCheck): ErrorCheckResponse {
 
     return {
         ok: false,
-        error: null,
     };
 }
 
@@ -58,7 +57,6 @@ export function isSetPfpError(err: ErrorCheck): ErrorCheckResponse {
 
     return {
         ok: false,
-        error: null,
     };
 }
 
@@ -78,7 +76,6 @@ export function isUpdateUserError(err: ErrorCheck): ErrorCheckResponse {
 
     return {
         ok: false,
-        error: null,
     };
 }
 
@@ -94,7 +91,6 @@ export function isFindUserError(err: ErrorCheck): ErrorCheckResponse {
 
     return {
         ok: false,
-        error: null,
     };
 }
 
@@ -114,7 +110,6 @@ export function isCreateUserError(err: ErrorCheck): ErrorCheckResponse {
 
     return {
         ok: false,
-        error: null,
     };
 }
 
@@ -147,7 +142,7 @@ export class UsersService {
         this.api = axiosInstance;
     }
 
-    async createUser(createUserDto: CreateUserDto): Promise<HttpError | null> {
+    async createUser(createUserDto: CreateUserDto): Promise<HttpError | undefined> {
         const resp = await this.api.post("/user", createUserDto).catch(err => err.response);
 
         return isCreateUserError(resp.status).error;
@@ -167,19 +162,19 @@ export class UsersService {
         };
     }
 
-    async updateUser(updateUserDto: UpdateUserDto): Promise<HttpError | null> {
+    async updateUser(updateUserDto: UpdateUserDto): Promise<HttpError | undefined> {
         const resp = await this.api.patch("/user", updateUserDto).catch(err => err.response);
 
         return isUpdateUserError(resp.status).error;
     }
 
-    async deleteUser(userId: string): Promise<HttpError | null> {
+    async deleteUser(userId: string): Promise<HttpError | undefined> {
         const resp = await this.api.delete(`/user/${userId}`).catch(err => err.response);
 
         return isDeleteUserError(resp.status).error;
     }
 
-    async setPfp(userId: string, pfp: Blob): Promise<HttpError | null> {
+    async setPfp(userId: string, pfp: Blob): Promise<HttpError | undefined> {
         const resp = await this.api.put("/user", {
             uuid: userId,
             file: pfp,

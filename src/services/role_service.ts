@@ -39,7 +39,6 @@ export function isDeleteRoleError(err: ErrorCheck): ErrorCheckResponse {
 
     return {
         ok: false,
-        error: null,
     };
 }
 
@@ -59,7 +58,6 @@ export function isUpdateRoleError(err: ErrorCheck): ErrorCheckResponse {
 
     return {
         ok: false,
-        error: null,
     };
 }
 
@@ -77,7 +75,6 @@ export function isCreateRoleError(err: ErrorCheck): ErrorCheckResponse {
 
     return {
         ok: false,
-        error: null,
     };
 }
 
@@ -95,7 +92,6 @@ export function isFindRoleError(err: ErrorCheck): ErrorCheckResponse {
 
     return {
         ok: false,
-        error: null,
     }
 }
 
@@ -117,7 +113,7 @@ export class RoleService {
         this.api = axiosInstance;
     }
 
-    async createRole(role: Role): Promise<HttpError | null> {
+    async createRole(role: Role): Promise<HttpError | undefined> {
         const resp = await this.api.post("/role", role).catch(err => err.response);
 
         return isCreateRoleError(resp.status).error;
@@ -140,13 +136,13 @@ export class RoleService {
         };
     }
 
-    async updateRole(updateRoleDto: UpdateRoleDto): Promise<HttpError | null> {
+    async updateRole(updateRoleDto: UpdateRoleDto): Promise<HttpError | undefined> {
         const resp = await this.api.patch("/role", updateRoleDto).catch(err => err.response);
 
         return isUpdateRoleError(resp.status).error;
     }
 
-    async deleteRole(roleId: number): Promise<HttpError | null> {
+    async deleteRole(roleId: number): Promise<HttpError | undefined> {
         const resp = await this.api.delete(`/role/:${roleId}`).catch(err => err.response);
 
         return isDeleteRoleError(resp.status).error;
