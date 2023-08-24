@@ -2,22 +2,121 @@ import { AxiosInstance } from "axios";
 import { User } from "../types/user";
 import {
     BadRequestError,
-    ConflictError,
-    InternalServerError,
-    ResourceNotFoundError, ResourcePermanentlyDeletedError,
-    UnauthorisedError
+    ErrorCheck, ErrorCheckResponse,
+    HttpError,
+    InternalServerError, UnauthorisedError
 } from "./errors";
 import { RoleNotFoundError } from "./role_service";
 
-export type UsernameTakenError = ConflictError;
-export type UserNotFoundError = ResourceNotFoundError;
-export type UserDeletedError = ResourcePermanentlyDeletedError;
+export const UsernameTakenError = new HttpError(409, "UsernameTakenError", "Username has been taken");
+export const UserNotFoundError = new HttpError(404, "UserNotFoundError", "User not found error");
+export const UserDeletedError = new HttpError(410, "UserDeletedError", "User has been deleted");
 
-export type CreateUserError = RoleNotFoundError | UsernameTakenError | UnauthorisedError | BadRequestError | InternalServerError | null;
-export type FindUserError = UserNotFoundError | UserDeletedError | InternalServerError | null;
-export type UpdateUserError = UnauthorisedError | BadRequestError | RoleNotFoundError | UserDeletedError | InternalServerError | null;
-export type SetPfpError = UnauthorisedError | BadRequestError | UserNotFoundError | InternalServerError | null;
-export type DeleteUserError = UnauthorisedError | BadRequestError | UserDeletedError | UserNotFoundError | InternalServerError | null;
+export function isUserDeletedError(error: HttpError): boolean {
+    return error === UserDeletedError;
+}
+
+export function isUserNotFoundError(error: HttpError): boolean {
+    return error === UserNotFoundError;
+}
+
+export function isUsernameTakenError(error: HttpError): boolean {
+    return error === UsernameTakenError;
+}
+
+export function isDeleteUserError(err: ErrorCheck): ErrorCheckResponse {
+    switch (err instanceof HttpError ? (err as HttpError).statusCode : err) {
+        case UserNotFoundError.statusCode:
+            return { ok: true, error: RoleNotFoundError };
+        case UserDeletedError.statusCode:
+            return { ok: true, error: RoleNotFoundError };
+        case UnauthorisedError.statusCode:
+            return { ok: true, error: UnauthorisedError };
+        case BadRequestError.statusCode:
+            return { ok: true, error: BadRequestError };
+        case InternalServerError.statusCode:
+            return { ok: true, error: InternalServerError };
+    }
+
+    return {
+        ok: false,
+        error: null,
+    };
+}
+
+export function isSetPfpError(err: ErrorCheck): ErrorCheckResponse {
+    switch (err instanceof HttpError ? (err as HttpError).statusCode : err) {
+        case UserNotFoundError.statusCode:
+            return { ok: true, error: RoleNotFoundError };
+        case UnauthorisedError.statusCode:
+            return { ok: true, error: UnauthorisedError };
+        case BadRequestError.statusCode:
+            return { ok: true, error: BadRequestError };
+        case InternalServerError.statusCode:
+            return { ok: true, error: InternalServerError };
+    }
+
+    return {
+        ok: false,
+        error: null,
+    };
+}
+
+export function isUpdateUserError(err: ErrorCheck): ErrorCheckResponse {
+    switch (err instanceof HttpError ? (err as HttpError).statusCode : err) {
+        case RoleNotFoundError.statusCode:
+            return { ok: true, error: RoleNotFoundError };
+        case UnauthorisedError.statusCode:
+            return { ok: true, error: UnauthorisedError };
+        case UserDeletedError.statusCode:
+            return { ok: true, error: UserDeletedError };
+        case BadRequestError.statusCode:
+            return { ok: true, error: BadRequestError };
+        case InternalServerError.statusCode:
+            return { ok: true, error: InternalServerError };
+    }
+
+    return {
+        ok: false,
+        error: null,
+    };
+}
+
+export function isFindUserError(err: ErrorCheck): ErrorCheckResponse {
+    switch (err instanceof HttpError ? (err as HttpError).statusCode : err) {
+        case UserNotFoundError.statusCode:
+            return { ok: true, error: RoleNotFoundError };
+        case UserDeletedError.statusCode:
+            return { ok: true, error: UsernameTakenError };
+        case InternalServerError.statusCode:
+            return { ok: true, error: InternalServerError };
+    }
+
+    return {
+        ok: false,
+        error: null,
+    };
+}
+
+export function isCreateUserError(err: ErrorCheck): ErrorCheckResponse {
+    switch (err instanceof HttpError ? (err as HttpError).statusCode : err) {
+        case RoleNotFoundError.statusCode:
+            return { ok: true, error: RoleNotFoundError };
+        case UsernameTakenError.statusCode:
+            return { ok: true, error: UsernameTakenError };
+        case UnauthorisedError.statusCode:
+            return { ok: true, error: UnauthorisedError };
+        case BadRequestError.statusCode:
+            return { ok: true, error: BadRequestError };
+        case InternalServerError.statusCode:
+            return { ok: true, error: InternalServerError };
+    }
+
+    return {
+        ok: false,
+        error: null,
+    };
+}
 
 export type CreateUserDto = {
     name: string;
@@ -37,7 +136,7 @@ export type UpdateUserDto = {
 }
 
 export type FindUserResponse = {
-    error?: FindUserError;
+    error?: HttpError | null;
     user?: User;
 }
 
@@ -48,109 +147,39 @@ export class UsersService {
         this.api = axiosInstance;
     }
 
-    async createUser(createUserDto: CreateUserDto): Promise<CreateUserError> {
+    async createUser(createUserDto: CreateUserDto): Promise<HttpError | null> {
         const resp = await this.api.post("/user", createUserDto).catch(err => err.response);
-        let error: CreateUserError = null;
 
-        switch (resp.status) {
-        case 404:
-            error = new ResourceNotFoundError(resp.data.message);
-            break;
-        case 409:
-            error = new ConflictError(resp.data.message);
-            break;
-        case 401:
-            error = new UnauthorisedError(resp.data.message);
-            break;
-        case 400:
-            error = new BadRequestError(resp.data.message);
-            break;
-        case 500:
-            error = new InternalServerError(resp.data.message);
-            break;
-        }
-
-        return error;
+        return isCreateUserError(resp.status).error;
     }
 
     async findUserById(userId: string): Promise<FindUserResponse> {
         const resp = await this.api.get(`/user/${userId}`).catch(err => err.response);
 
-        if(resp.status === 200) {
+        if(resp.status !== 200) {
             return {
-                user: resp.data as User,
+                error: isFindUserError(resp.status).error,
             };
         }
 
-        let error: FindUserError = null;
-        switch (resp.status) {
-        case 404:
-            error = new ResourceNotFoundError(resp.data.message);
-            break;
-        case 410:
-            error = new ResourcePermanentlyDeletedError(resp.data.message);
-            break;
-        case 500:
-            error = new InternalServerError(resp.data.message);
-            break;
-        }
-
         return {
-            error,
+            user: resp.data as User,
         };
     }
 
-    async updateUser(updateUserDto: UpdateUserDto): Promise<UpdateUserError> {
+    async updateUser(updateUserDto: UpdateUserDto): Promise<HttpError | null> {
         const resp = await this.api.patch("/user", updateUserDto).catch(err => err.response);
-        let error: UpdateUserError = null;
 
-        switch (resp.status) {
-        case 404:
-            error = new ResourceNotFoundError(resp.data.message);
-            break;
-        case 410:
-            error = new ResourcePermanentlyDeletedError(resp.data.message);
-            break;
-        case 401:
-            error = new UnauthorisedError(resp.data.message);
-            break;
-        case 400:
-            error = new BadRequestError(resp.data.message);
-            break;
-        case 500:
-            error = new InternalServerError(resp.data.message);
-            break;
-        }
-
-        return error;
+        return isUpdateUserError(resp.status).error;
     }
 
-    async deleteUser(userId: string): Promise<DeleteUserError> {
+    async deleteUser(userId: string): Promise<HttpError | null> {
         const resp = await this.api.delete(`/user/${userId}`).catch(err => err.response);
-        let error: DeleteUserError = null;
 
-        switch (resp.status) {
-        case 404:
-            error = new ResourceNotFoundError(resp.data.message);
-            break;
-        case 410:
-            error = new ResourcePermanentlyDeletedError(resp.data.message);
-            break;
-        case 401:
-            error = new UnauthorisedError(resp.data.message);
-            break;
-        case 400:
-            error = new BadRequestError(resp.data.message);
-            break;
-        case 500:
-            error = new InternalServerError(resp.data.message);
-            break;
-        }
-
-        return error;
+        return isDeleteUserError(resp.status).error;
     }
 
-    async setPfp(userId: string, pfp: Blob): Promise<SetPfpError> {
+    async setPfp(userId: string, pfp: Blob): Promise<HttpError | null> {
         const resp = await this.api.put("/user", {
             uuid: userId,
             file: pfp,
@@ -159,23 +188,7 @@ export class UsersService {
                 "Content-Type": "multipart/form-data",
             }
         }).catch(err => err.response);
-        let error: SetPfpError = null;
 
-        switch (resp.status) {
-        case 401:
-            error = new UnauthorisedError(resp.data.message);
-            break;
-        case 404:
-            error = new ResourceNotFoundError(resp.data.message);
-            break;
-        case 400:
-            error = new BadRequestError(resp.data.message);
-            break;
-        case 500:
-            error = new InternalServerError(resp.data.message);
-            break;
-        }
-
-        return error;
+        return isSetPfpError(resp.status).error;
     }
 }

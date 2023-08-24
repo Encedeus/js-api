@@ -2,24 +2,106 @@ import { AxiosInstance } from "axios";
 import { Role } from "../types/role";
 import {
     BadRequestError,
-    InternalServerError,
-    ResourceNotFoundError,
-    ResourcePermanentlyDeletedError,
-    UnauthorisedError
+    ErrorCheck, ErrorCheckResponse,
+    HttpError,
+    InternalServerError
 } from "./errors";
 
-export type MissingUserPermissionError = UnauthorisedError;
-export type RoleDeletedError = ResourcePermanentlyDeletedError;
-export type RoleNotFoundError = ResourceNotFoundError;
+export const MissingUserPermissionsError = new HttpError(401, "MissingUserPermissionsError", "user doesn't have required permissions");
+export const RoleDeletedError = new HttpError(410, "RoleDeletedError", "role has been deleted");
+export const RoleNotFoundError = new HttpError(404, "RoleNotFoundError", "role not found");
 
-export type CreateRoleError = MissingUserPermissionError | BadRequestError | RoleNotFoundError | InternalServerError | null;
-export type FindRoleError = RoleDeletedError | BadRequestError | RoleNotFoundError | InternalServerError | null;
-export type UpdateRoleError = UnauthorisedError | BadRequestError | RoleNotFoundError | RoleDeletedError | InternalServerError | null;
-export type DeleteRoleError = UnauthorisedError | BadRequestError | RoleNotFoundError | RoleDeletedError | InternalServerError | null;
+export function isRoleNotFoundError(error: HttpError) {
+    return error === RoleNotFoundError;
+}
+
+export function isRoleDeletedError(error: HttpError) {
+    return error === RoleDeletedError;
+}
+
+export function isMissingUserPermissionsError(error: HttpError): boolean {
+    return error === MissingUserPermissionsError;
+}
+
+export function isDeleteRoleError(err: ErrorCheck): ErrorCheckResponse {
+    switch (err instanceof HttpError ? (err as HttpError).statusCode : err) {
+        case MissingUserPermissionsError.statusCode:
+            return { ok: true, error: MissingUserPermissionsError };
+        case BadRequestError.statusCode:
+            return { ok: true, error: BadRequestError }
+        case RoleNotFoundError.statusCode:
+            return { ok: true, error: RoleNotFoundError }
+        case RoleDeletedError.statusCode:
+            return { ok: true, error: RoleDeletedError }
+        case InternalServerError.statusCode:
+            return { ok: true, error: InternalServerError }
+    }
+
+    return {
+        ok: false,
+        error: null,
+    };
+}
+
+export function isUpdateRoleError(err: ErrorCheck): ErrorCheckResponse {
+    switch (err instanceof HttpError ? (err as HttpError).statusCode : err) {
+        case MissingUserPermissionsError.statusCode:
+            return { ok: true, error: MissingUserPermissionsError };
+        case BadRequestError.statusCode:
+            return { ok: true, error: BadRequestError }
+        case RoleNotFoundError.statusCode:
+            return { ok: true, error: RoleNotFoundError }
+        case RoleDeletedError.statusCode:
+            return { ok: true, error: RoleDeletedError }
+        case InternalServerError.statusCode:
+            return { ok: true, error: InternalServerError }
+    }
+
+    return {
+        ok: false,
+        error: null,
+    };
+}
+
+export function isCreateRoleError(err: ErrorCheck): ErrorCheckResponse {
+    switch (err instanceof HttpError ? (err as HttpError).statusCode : err) {
+        case MissingUserPermissionsError.statusCode:
+            return { ok: true, error: MissingUserPermissionsError };
+        case BadRequestError.statusCode:
+            return { ok: true, error: BadRequestError }
+        case RoleNotFoundError.statusCode:
+            return { ok: true, error: RoleNotFoundError }
+        case InternalServerError.statusCode:
+            return { ok: true, error: InternalServerError }
+    }
+
+    return {
+        ok: false,
+        error: null,
+    };
+}
+
+export function isFindRoleError(err: ErrorCheck): ErrorCheckResponse {
+    switch (err instanceof HttpError ? (err as HttpError).statusCode : err) {
+        case RoleDeletedError.statusCode:
+            return { ok: true, error: MissingUserPermissionsError };
+        case BadRequestError.statusCode:
+            return { ok: true, error: BadRequestError }
+        case RoleNotFoundError.statusCode:
+            return { ok: true, error: RoleNotFoundError }
+        case InternalServerError.statusCode:
+            return { ok: true, error: InternalServerError }
+    }
+
+    return {
+        ok: false,
+        error: null,
+    }
+}
 
 export type FindRoleResponse = {
     role?: Role;
-    error?: FindRoleError;
+    error?: HttpError | null;
 }
 
 export type UpdateRoleDto = {
@@ -35,29 +117,13 @@ export class RoleService {
         this.api = axiosInstance;
     }
 
-    async createRole(role: Role): Promise<CreateRoleError> {
+    async createRole(role: Role): Promise<HttpError | null> {
         const resp = await this.api.post("/role", role).catch(err => err.response);
-        let error: CreateRoleError = null;
 
-        switch (resp.status) {
-        case 401:
-            error = new UnauthorisedError(resp.data.message);
-            break;
-        case 400:
-            error = new BadRequestError(resp.data.message);
-            break;
-        case 404:
-            error = new ResourceNotFoundError(resp.data.message);
-            break;
-        case 500:
-            error = new InternalServerError(resp.data.message);
-            break;
-        }
-
-        return error;
+        return isCreateRoleError(resp.status).error;
     }
 
-    async getRole(roleId: number): Promise<FindRoleResponse> {
+    async findRoleById(roleId: number): Promise<FindRoleResponse> {
         const resp = await this.api.get(`/role/${roleId}`).catch(err => err.response);
         if (resp.status === 200) {
             return {
@@ -69,74 +135,20 @@ export class RoleService {
             };
         }
 
-        let error: FindRoleError = null;
-        switch (resp.status) {
-        case 404:
-            error = new ResourceNotFoundError(resp.data.message);
-            break;
-        case 400:
-            error = new BadRequestError(resp.data.message);
-            break;
-        case 410:
-            error = new ResourcePermanentlyDeletedError(resp.data.message);
-            break;
-        case 500:
-            error = new InternalServerError(resp.data.message);
-            break;
-        }
-
         return {
-            error,
+            error: isFindRoleError(resp.status).error,
         };
     }
 
-    async updateRole(updateRoleDto: UpdateRoleDto): Promise<UpdateRoleError> {
+    async updateRole(updateRoleDto: UpdateRoleDto): Promise<HttpError | null> {
         const resp = await this.api.patch("/role", updateRoleDto).catch(err => err.response);
 
-        let error: UpdateRoleError = null;
-        switch (resp.status) {
-        case 401:
-            error = new UnauthorisedError(resp.data.message);
-            break;
-        case 400:
-            error = new BadRequestError(resp.data.message);
-            break;
-        case 410:
-            error = new ResourcePermanentlyDeletedError(resp.data.message);
-            break;
-        case 404:
-            error = new ResourceNotFoundError(resp.data.message);
-            break;
-        case 500:
-            error = new InternalServerError(resp.data.message);
-            break;
-        }
-
-        return error;
+        return isUpdateRoleError(resp.status).error;
     }
 
-    async deleteRole(roleId: number): Promise<DeleteRoleError> {
+    async deleteRole(roleId: number): Promise<HttpError | null> {
         const resp = await this.api.delete(`/role/:${roleId}`).catch(err => err.response);
 
-        let error: DeleteRoleError = null;
-        switch (resp.status) {
-        case 401:
-            error = new UnauthorisedError(resp.data.message);
-            break;
-        case 400:
-            error = new BadRequestError(resp.data.message);
-            break;
-        case 410:
-            error = new ResourcePermanentlyDeletedError(resp.data.message);
-            break;
-        case 404:
-            error = new ResourceNotFoundError(resp.data.message);
-            break;
-        case 500:
-            error = new InternalServerError(resp.data.message);
-            break;
-        }
-
-        return error;
+        return isDeleteRoleError(resp.status).error;
     }
 }
