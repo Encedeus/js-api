@@ -1,13 +1,18 @@
 import { AxiosInstance } from "axios";
 import { BadRequestError, ErrorCheck, ErrorCheckResponse, HttpError, InternalServerError } from "./errors";
 import { UserDeletedError, UserNotFoundError } from "./users_service";
+import {
+    AccountAPIKeyCreateRequest, AccountAPIKeyCreateResponse,
+    AccountAPIKeyDeleteRequest,
+    AccountAPIKeyFindManyByUserRequest, AccountAPIKeyFindManyResponse, AccountAPIKeyFindOneResponse
+} from "../proto/api_key_api";
 
 export const AccountApiKeyNotFoundError = new HttpError(404, "AccountApiKeyNotFound", "Account API key not found");
 export const AccountApiKeyDeletedError = new HttpError(410, "AccountApiKeyDeleted", "Account API key was deleted");
 
 export type CreateAccountApiKeyResponse = {
     error?: HttpError;
-    key?: string;
+    response?: AccountAPIKeyCreateResponse;
 }
 
 export type DeleteAccountApiKeyResponse = {
@@ -16,12 +21,12 @@ export type DeleteAccountApiKeyResponse = {
 
 export type FindOneAccountApiKeyResponse = {
     error?: HttpError;
-    key?: string;
+    response?: AccountAPIKeyFindOneResponse;
 }
 
 export type FindManyAccountApiKeysResponse = {
     error?: HttpError;
-    keys?: string[];
+    response?: AccountAPIKeyFindManyResponse;
 }
 
 export function isFindManyAccountApiKeysError(err: ErrorCheck): ErrorCheckResponse {
@@ -102,8 +107,8 @@ export class ApiKeyService {
         this.api = api;
     }
 
-    async createAccountApiKey(): Promise<CreateAccountApiKeyResponse> {
-        const resp = await this.api.post("/key/account").catch(err => err.response);
+    async createAccountApiKey(createReq: AccountAPIKeyCreateRequest): Promise<CreateAccountApiKeyResponse> {
+        const resp = await this.api.post("/key/account", createReq).catch(err => err.response);
         if (resp.status !== 201) {
             return {
                 error: isCreateAccountApiKeyError(resp.status).error,
@@ -111,13 +116,12 @@ export class ApiKeyService {
         }
 
         return {
-            key: resp.data.key,
+            response: resp.data as AccountAPIKeyCreateResponse,
         };
     }
 
-    async deleteAccountApiKey(keyId: string): Promise<DeleteAccountApiKeyResponse> {
-        const resp = await this.api.delete(`/key/account/${keyId}`).catch(err => err.response);
-
+    async deleteAccountApiKey(deleteReq: AccountAPIKeyDeleteRequest): Promise<DeleteAccountApiKeyResponse> {
+        const resp = await this.api.delete(`/key/account/${deleteReq.id?.value}`).catch(err => err.response);
         if (resp.status !== 200) {
             return {
                 error: isDeleteAccountApiKeyError(resp.status).error,
@@ -131,15 +135,16 @@ export class ApiKeyService {
         const resp = await this.api.get(`/key/account/${keyId}`).catch(err => err.response);
     }*/
 
-    async findAccountApiKeysByUserId(userId: string): Promise<FindManyAccountApiKeysResponse> {
-        const resp = await this.api.get(`/key/account/${userId}`).catch(err => err.response);
-
+    async findAccountApiKeysByUserId(findManyReq: AccountAPIKeyFindManyByUserRequest): Promise<FindManyAccountApiKeysResponse> {
+        const resp = await this.api.get(`/key/account/${findManyReq.userId?.value}`).catch(err => err.response);
         if (resp.status !== 200) {
             return {
                 error: isFindManyAccountApiKeysError(resp.status).error,
             }
         }
 
-        return {};
+        return {
+            response: resp.data as AccountAPIKeyFindManyResponse,
+        };
     }
 }

@@ -1,11 +1,17 @@
 import { AxiosInstance } from "axios";
-import { Role } from "../types/role";
 import {
     BadRequestError,
     ErrorCheck, ErrorCheckResponse,
     HttpError,
     InternalServerError
 } from "./errors";
+import {
+    RoleCreateRequest,
+    RoleDeleteRequest,
+    RoleFindOneRequest,
+    RoleFindOneResponse,
+    RoleUpdateRequest
+} from "../proto/role_api";
 
 export const MissingUserPermissionsError = new HttpError(401, "MissingUserPermissionsError", "user doesn't have required permissions");
 export const RoleDeletedError = new HttpError(410, "RoleDeletedError", "role has been deleted");
@@ -96,14 +102,8 @@ export function isFindRoleError(err: ErrorCheck): ErrorCheckResponse {
 }
 
 export type FindRoleResponse = {
-    role?: Role;
-    error?: HttpError | null;
-}
-
-export type UpdateRoleDto = {
-    name: string;
-    permissions: string[];
-    id: number;
+    response?: RoleFindOneResponse;
+    error?: HttpError;
 }
 
 export class RoleService {
@@ -113,21 +113,17 @@ export class RoleService {
         this.api = axiosInstance;
     }
 
-    async createRole(role: Role): Promise<HttpError | undefined> {
-        const resp = await this.api.post("/role", role).catch(err => err.response);
+    async createRole(createReq: RoleCreateRequest): Promise<HttpError | undefined> {
+        const resp = await this.api.post("/role", createReq).catch(err => err.response);
 
         return isCreateRoleError(resp.status).error;
     }
 
-    async findRoleById(roleId: number): Promise<FindRoleResponse> {
-        const resp = await this.api.get(`/role/${roleId}`).catch(err => err.response);
+    async findRoleById(findReq: RoleFindOneRequest): Promise<FindRoleResponse> {
+        const resp = await this.api.get(`/role/${findReq.id?.value}`).catch(err => err.response);
         if (resp.status === 200) {
             return {
-                role: new Role()
-                    .setName(resp.data.name)
-                    .setPermissions(resp.data.permissions)
-                    .setCreatedAt(new Date(resp.data.createdAt))
-                    .setUpdatedAt(new Date(resp.data.updatedAt)),
+                response: resp.data as RoleFindOneResponse
             };
         }
 
@@ -136,14 +132,14 @@ export class RoleService {
         };
     }
 
-    async updateRole(updateRoleDto: UpdateRoleDto): Promise<HttpError | undefined> {
-        const resp = await this.api.patch("/role", updateRoleDto).catch(err => err.response);
+    async updateRole(updateReq: RoleUpdateRequest): Promise<HttpError | undefined> {
+        const resp = await this.api.patch("/role", updateReq).catch(err => err.response);
 
         return isUpdateRoleError(resp.status).error;
     }
 
-    async deleteRole(roleId: number): Promise<HttpError | undefined> {
-        const resp = await this.api.delete(`/role/:${roleId}`).catch(err => err.response);
+    async deleteRole(deleteReq: RoleDeleteRequest): Promise<HttpError | undefined> {
+        const resp = await this.api.delete(`/role/:${deleteReq.id?.value}`).catch(err => err.response);
 
         return isDeleteRoleError(resp.status).error;
     }

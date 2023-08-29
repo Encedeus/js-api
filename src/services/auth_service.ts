@@ -1,5 +1,10 @@
 import { AxiosInstance } from "axios";
 import { HttpError, InternalServerError } from "./errors";
+import {
+    AccessTokenRefreshResponse,
+    UserSignInRequest,
+    UserSignInResponse
+} from "../proto/auth_api";
 
 export const UsernameOrEmailNotSpecifiedError = new HttpError(400, "UsernameOrEmailNotSpecifiedError", "Username or Email not specified");
 export const WrongEmailOrUsernameError = new HttpError(404, "WrongEmailOrUsernameError", "Wrong Email or Username");
@@ -46,19 +51,13 @@ export function isSignOutError(err: HttpError): boolean {
 }
 
 export type SignInUserResponse = {
-    error?: HttpError | null;
-    accessToken?: string;
+    error?: HttpError;
+    response?: UserSignInResponse;
 }
 
 export type RefreshAccessTokenResponse = {
-    accessToken?: string;
-    error?: HttpError | null;
-}
-
-export type UserSignInDto = {
-    email?: string,
-    username? :string,
-    password: string,
+    response?: AccessTokenRefreshResponse;
+    error?: HttpError;
 }
 
 export class AuthService {
@@ -68,15 +67,15 @@ export class AuthService {
         this.api = axiosInstance;
     }
 
-    async signInUser(userLogin: UserSignInDto): Promise<SignInUserResponse> {
-        const resp = await this.api.post("/auth/login", userLogin).catch(err => err.response);
+    async signInUser(userLogin: UserSignInRequest): Promise<SignInUserResponse> {
+        const resp = await this.api.post("/auth/signin", userLogin).catch(err => err.response);
         if (resp.status === 201) {
             return {
-                accessToken: resp.data.accessToken,
+                response: resp.data as UserSignInResponse,
             };
         }
 
-        let error: HttpError | null = null;
+        let error: HttpError | undefined;
         switch (resp.status) {
         case 400:
             error = UsernameOrEmailNotSpecifiedError;
@@ -106,16 +105,16 @@ export class AuthService {
         }
 
         return {
-            accessToken: resp.data.accessToken,
+            response: resp.data as AccessTokenRefreshResponse,
         };
     }
 
-    async signOut(): Promise<HttpError | null> {
-        const resp = await this.api.delete("/auth/logout").catch(err => err.response);
+    async signOut(): Promise<HttpError | undefined> {
+        const resp = await this.api.delete("/auth/signout").catch(err => err.response);
         if (resp.status !== 200) {
             return SignOutError;
         }
 
-        return null;
+        return undefined;
     }
 }
