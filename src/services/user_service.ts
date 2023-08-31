@@ -239,7 +239,7 @@ export class UsersService {
     }
 
     async changePassword(changeReq: UserChangePasswordRequest): Promise<ChangePasswordResponse> {
-        const resp = await this.api.patch(`/user/${changeReq.userId?.value}/changePassword`).catch(err => err.response);
+        const resp = await this.api.patch(`/user/${changeReq.userId?.value}/changePassword`, changeReq).catch(err => err.response);
 
         const { ok, error } = isChangePasswordError(resp.status);
         if (ok) {
@@ -254,7 +254,7 @@ export class UsersService {
     }
 
     async changeEmail(changeReq: UserChangePasswordRequest): Promise<ChangeEmailResponse> {
-        const resp = await this.api.patch(`/user/${changeReq.userId?.value}/changeEmail`).catch(err => err.response);
+        const resp = await this.api.patch(`/user/${changeReq.userId?.value}/changeEmail`, changeReq).catch(err => err.response);
 
         const { ok, error } = isChangeEmailError(resp.status);
         if (ok) {
@@ -269,7 +269,7 @@ export class UsersService {
     }
 
     async changeUsername(changeReq: UserChangePasswordRequest): Promise<ChangeUsernameResponse> {
-        const resp = await this.api.patch(`/user/${changeReq.userId?.value}/changeUsername`).catch(err => err.response);
+        const resp = await this.api.patch(`/user/${changeReq.userId?.value}/changeUsername`, changeReq).catch(err => err.response);
 
         const { ok, error } = isChangeUsernameError(resp.status);
         if (ok) {
