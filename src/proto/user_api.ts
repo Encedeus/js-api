@@ -51,6 +51,33 @@ export interface UserFindManyResponse {
   users: User[];
 }
 
+export interface UserChangePasswordRequest {
+  userId: UUID | undefined;
+  oldPassword: string;
+  newPassword: string;
+}
+
+export interface UserChangePasswordResponse {
+}
+
+export interface UserChangeUsernameRequest {
+  userId: UUID | undefined;
+  oldUsername: string;
+  newUsername: string;
+}
+
+export interface UserChangeUsernameResponse {
+}
+
+export interface UserChangeEmailRequest {
+  userId: UUID | undefined;
+  oldEmail: string;
+  newEmail: string;
+}
+
+export interface UserChangeEmailResponse {
+}
+
 function createBaseUserCreateRequest(): UserCreateRequest {
   return { name: "", email: "", password: "", roleId: undefined, roleName: "" };
 }
@@ -695,6 +722,408 @@ export const UserFindManyResponse = {
   fromPartial<I extends Exact<DeepPartial<UserFindManyResponse>, I>>(object: I): UserFindManyResponse {
     const message = createBaseUserFindManyResponse();
     message.users = object.users?.map((e) => User.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseUserChangePasswordRequest(): UserChangePasswordRequest {
+  return { userId: undefined, oldPassword: "", newPassword: "" };
+}
+
+export const UserChangePasswordRequest = {
+  encode(message: UserChangePasswordRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.userId !== undefined) {
+      UUID.encode(message.userId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.oldPassword !== "") {
+      writer.uint32(18).string(message.oldPassword);
+    }
+    if (message.newPassword !== "") {
+      writer.uint32(26).string(message.newPassword);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserChangePasswordRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserChangePasswordRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.userId = UUID.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.oldPassword = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.newPassword = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UserChangePasswordRequest {
+    return {
+      userId: isSet(object.userId) ? UUID.fromJSON(object.userId) : undefined,
+      oldPassword: isSet(object.oldPassword) ? String(object.oldPassword) : "",
+      newPassword: isSet(object.newPassword) ? String(object.newPassword) : "",
+    };
+  },
+
+  toJSON(message: UserChangePasswordRequest): unknown {
+    const obj: any = {};
+    if (message.userId !== undefined) {
+      obj.userId = UUID.toJSON(message.userId);
+    }
+    if (message.oldPassword !== "") {
+      obj.oldPassword = message.oldPassword;
+    }
+    if (message.newPassword !== "") {
+      obj.newPassword = message.newPassword;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<UserChangePasswordRequest>, I>>(base?: I): UserChangePasswordRequest {
+    return UserChangePasswordRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<UserChangePasswordRequest>, I>>(object: I): UserChangePasswordRequest {
+    const message = createBaseUserChangePasswordRequest();
+    message.userId = (object.userId !== undefined && object.userId !== null)
+      ? UUID.fromPartial(object.userId)
+      : undefined;
+    message.oldPassword = object.oldPassword ?? "";
+    message.newPassword = object.newPassword ?? "";
+    return message;
+  },
+};
+
+function createBaseUserChangePasswordResponse(): UserChangePasswordResponse {
+  return {};
+}
+
+export const UserChangePasswordResponse = {
+  encode(_: UserChangePasswordResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserChangePasswordResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserChangePasswordResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): UserChangePasswordResponse {
+    return {};
+  },
+
+  toJSON(_: UserChangePasswordResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<UserChangePasswordResponse>, I>>(base?: I): UserChangePasswordResponse {
+    return UserChangePasswordResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<UserChangePasswordResponse>, I>>(_: I): UserChangePasswordResponse {
+    const message = createBaseUserChangePasswordResponse();
+    return message;
+  },
+};
+
+function createBaseUserChangeUsernameRequest(): UserChangeUsernameRequest {
+  return { userId: undefined, oldUsername: "", newUsername: "" };
+}
+
+export const UserChangeUsernameRequest = {
+  encode(message: UserChangeUsernameRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.userId !== undefined) {
+      UUID.encode(message.userId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.oldUsername !== "") {
+      writer.uint32(18).string(message.oldUsername);
+    }
+    if (message.newUsername !== "") {
+      writer.uint32(26).string(message.newUsername);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserChangeUsernameRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserChangeUsernameRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.userId = UUID.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.oldUsername = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.newUsername = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UserChangeUsernameRequest {
+    return {
+      userId: isSet(object.userId) ? UUID.fromJSON(object.userId) : undefined,
+      oldUsername: isSet(object.oldUsername) ? String(object.oldUsername) : "",
+      newUsername: isSet(object.newUsername) ? String(object.newUsername) : "",
+    };
+  },
+
+  toJSON(message: UserChangeUsernameRequest): unknown {
+    const obj: any = {};
+    if (message.userId !== undefined) {
+      obj.userId = UUID.toJSON(message.userId);
+    }
+    if (message.oldUsername !== "") {
+      obj.oldUsername = message.oldUsername;
+    }
+    if (message.newUsername !== "") {
+      obj.newUsername = message.newUsername;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<UserChangeUsernameRequest>, I>>(base?: I): UserChangeUsernameRequest {
+    return UserChangeUsernameRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<UserChangeUsernameRequest>, I>>(object: I): UserChangeUsernameRequest {
+    const message = createBaseUserChangeUsernameRequest();
+    message.userId = (object.userId !== undefined && object.userId !== null)
+      ? UUID.fromPartial(object.userId)
+      : undefined;
+    message.oldUsername = object.oldUsername ?? "";
+    message.newUsername = object.newUsername ?? "";
+    return message;
+  },
+};
+
+function createBaseUserChangeUsernameResponse(): UserChangeUsernameResponse {
+  return {};
+}
+
+export const UserChangeUsernameResponse = {
+  encode(_: UserChangeUsernameResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserChangeUsernameResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserChangeUsernameResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): UserChangeUsernameResponse {
+    return {};
+  },
+
+  toJSON(_: UserChangeUsernameResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<UserChangeUsernameResponse>, I>>(base?: I): UserChangeUsernameResponse {
+    return UserChangeUsernameResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<UserChangeUsernameResponse>, I>>(_: I): UserChangeUsernameResponse {
+    const message = createBaseUserChangeUsernameResponse();
+    return message;
+  },
+};
+
+function createBaseUserChangeEmailRequest(): UserChangeEmailRequest {
+  return { userId: undefined, oldEmail: "", newEmail: "" };
+}
+
+export const UserChangeEmailRequest = {
+  encode(message: UserChangeEmailRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.userId !== undefined) {
+      UUID.encode(message.userId, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.oldEmail !== "") {
+      writer.uint32(18).string(message.oldEmail);
+    }
+    if (message.newEmail !== "") {
+      writer.uint32(26).string(message.newEmail);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserChangeEmailRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserChangeEmailRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.userId = UUID.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.oldEmail = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.newEmail = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UserChangeEmailRequest {
+    return {
+      userId: isSet(object.userId) ? UUID.fromJSON(object.userId) : undefined,
+      oldEmail: isSet(object.oldEmail) ? String(object.oldEmail) : "",
+      newEmail: isSet(object.newEmail) ? String(object.newEmail) : "",
+    };
+  },
+
+  toJSON(message: UserChangeEmailRequest): unknown {
+    const obj: any = {};
+    if (message.userId !== undefined) {
+      obj.userId = UUID.toJSON(message.userId);
+    }
+    if (message.oldEmail !== "") {
+      obj.oldEmail = message.oldEmail;
+    }
+    if (message.newEmail !== "") {
+      obj.newEmail = message.newEmail;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<UserChangeEmailRequest>, I>>(base?: I): UserChangeEmailRequest {
+    return UserChangeEmailRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<UserChangeEmailRequest>, I>>(object: I): UserChangeEmailRequest {
+    const message = createBaseUserChangeEmailRequest();
+    message.userId = (object.userId !== undefined && object.userId !== null)
+      ? UUID.fromPartial(object.userId)
+      : undefined;
+    message.oldEmail = object.oldEmail ?? "";
+    message.newEmail = object.newEmail ?? "";
+    return message;
+  },
+};
+
+function createBaseUserChangeEmailResponse(): UserChangeEmailResponse {
+  return {};
+}
+
+export const UserChangeEmailResponse = {
+  encode(_: UserChangeEmailResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserChangeEmailResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserChangeEmailResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): UserChangeEmailResponse {
+    return {};
+  },
+
+  toJSON(_: UserChangeEmailResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<UserChangeEmailResponse>, I>>(base?: I): UserChangeEmailResponse {
+    return UserChangeEmailResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<UserChangeEmailResponse>, I>>(_: I): UserChangeEmailResponse {
+    const message = createBaseUserChangeEmailResponse();
     return message;
   },
 };

@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import { AuthService } from "./services/auth_service";
 import { RoleService } from "./services/role_service";
-import { UsersService } from "./services/users_service";
+import { UsersService } from "./services/user_service";
 import { ApiKeyService } from "./services/api_key_service";
 
 export class EncedeusAPI {

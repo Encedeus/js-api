@@ -7,6 +7,8 @@ import {
 } from "./errors";
 import { RoleNotFoundError } from "./role_service";
 import {
+    UserChangeEmailResponse,
+    UserChangePasswordRequest, UserChangePasswordResponse, UserChangeUsernameResponse,
     UserCreateRequest,
     UserDeleteRequest,
     UserFindOneRequest,
@@ -119,9 +121,69 @@ export function isCreateUserError(err: ErrorCheck): ErrorCheckResponse {
     };
 }
 
+export function isChangePasswordError(err: ErrorCheck): ErrorCheckResponse {
+    switch (err instanceof HttpError ? (err as HttpError).statusCode : err) {
+        case UserNotFoundError.statusCode:
+            return { ok: true, error: UserNotFoundError };
+        case BadRequestError.statusCode:
+            return { ok: true, error: BadRequestError };
+        case InternalServerError.statusCode:
+            return { ok: true, error: InternalServerError };
+    }
+
+    return {
+        ok: false,
+    };
+}
+
+export function isChangeUsernameError(err: ErrorCheck): ErrorCheckResponse {
+    switch (err instanceof HttpError ? (err as HttpError).statusCode : err) {
+        case UserNotFoundError.statusCode:
+            return { ok: true, error: UserNotFoundError };
+        case BadRequestError.statusCode:
+            return { ok: true, error: BadRequestError };
+        case InternalServerError.statusCode:
+            return { ok: true, error: InternalServerError };
+    }
+
+    return {
+        ok: false,
+    };
+}
+
+export function isChangeEmailError(err: ErrorCheck): ErrorCheckResponse {
+    switch (err instanceof HttpError ? (err as HttpError).statusCode : err) {
+        case UserNotFoundError.statusCode:
+            return { ok: true, error: UserNotFoundError };
+        case BadRequestError.statusCode:
+            return { ok: true, error: BadRequestError };
+        case InternalServerError.statusCode:
+            return { ok: true, error: InternalServerError };
+    }
+
+    return {
+        ok: false,
+    };
+}
+
 export type FindUserResponse = {
     error?: HttpError;
     response?: UserFindOneResponse;
+}
+
+export type ChangePasswordResponse = {
+    error?: HttpError;
+    response?: UserChangePasswordResponse;
+}
+
+export type ChangeUsernameResponse = {
+    error?: HttpError;
+    response?: UserChangeUsernameResponse;
+}
+
+export type ChangeEmailResponse = {
+    error?: HttpError;
+    response?: UserChangeEmailResponse;
 }
 
 export class UsersService {
@@ -174,5 +236,50 @@ export class UsersService {
         }).catch(err => err.response);
 
         return isSetPfpError(resp.status).error;
+    }
+
+    async changePassword(changeReq: UserChangePasswordRequest): Promise<ChangePasswordResponse> {
+        const resp = await this.api.patch(`/user/${changeReq.userId}/changePassword`);
+
+        const { ok, error } = isChangePasswordError(resp.status);
+        if (ok) {
+            return {
+                error,
+            };
+        }
+
+        return {
+            response: resp.data as UserChangePasswordResponse,
+        };
+    }
+
+    async changeEmail(changeReq: UserChangePasswordRequest): Promise<ChangeEmailResponse> {
+        const resp = await this.api.patch(`/user/${changeReq.userId}/changeEmail`);
+
+        const { ok, error } = isChangeEmailError(resp.status);
+        if (ok) {
+            return {
+                error,
+            };
+        }
+
+        return {
+            response: resp.data as UserChangeEmailResponse,
+        };
+    }
+
+    async changeUsername(changeReq: UserChangePasswordRequest): Promise<ChangeUsernameResponse> {
+        const resp = await this.api.patch(`/user/${changeReq.userId}/changeUsername`);
+
+        const { ok, error } = isChangeUsernameError(resp.status);
+        if (ok) {
+            return {
+                error,
+            };
+        }
+
+        return {
+            response: resp.data as UserChangeUsernameResponse,
+        };
     }
 }

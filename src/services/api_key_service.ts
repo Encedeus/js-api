@@ -1,6 +1,6 @@
 import { AxiosInstance } from "axios";
 import { BadRequestError, ErrorCheck, ErrorCheckResponse, HttpError, InternalServerError } from "./errors";
-import { UserDeletedError, UserNotFoundError } from "./users_service";
+import { UserDeletedError, UserNotFoundError } from "./user_service";
 import {
     AccountAPIKeyCreateRequest, AccountAPIKeyCreateResponse,
     AccountAPIKeyDeleteRequest,
