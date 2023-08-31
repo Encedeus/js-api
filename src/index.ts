@@ -1,5 +1,5 @@
 export { EncedeusAPI } from "./api";
-export { UserFindOneResponse, UserFindOneRequest, UserCreateRequest, UserCreateResponse, UserDeleteRequest, UserDeleteResponse, UserFindManyResponse, UserUpdateRequest, UserUpdateResponse } from "./proto/user_api"
+export { UserFindOneResponse, UserFindOneRequest, UserCreateRequest, UserCreateResponse, UserDeleteRequest, UserDeleteResponse, UserFindManyResponse, UserUpdateRequest, UserUpdateResponse, UserChangeUsernameResponse, UserChangePasswordResponse, UserChangeEmailResponse, UserChangePasswordRequest, UserChangeEmailRequest, UserChangeUsernameRequest } from "./proto/user_api"
 export { User, AccessToken, AccountAPIKey, AccountAPIKeyToken, Token, Role, RefreshToken, TokenType, tokenTypeToJSON, tokenTypeFromJSON } from "./proto/common";
 export { AccountAPIKeyFindManyResponse, AccountAPIKeyCreateResponse, AccountAPIKeyCreateRequest, AccountAPIKeyDeleteRequest, AccountAPIKeyDeleteResponse, AccountAPIKeyFindManyByUserRequest, AccountAPIKeyFindOneResponse, AccountAPIKeyFindOneRequest } from "./proto/api_key_api"
 export { UUID } from "./proto/generic";
