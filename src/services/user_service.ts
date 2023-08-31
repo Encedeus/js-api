@@ -15,6 +15,7 @@ import {
     UserFindOneResponse,
     UserUpdateRequest
 } from "../proto/user_api";
+import { WrongPasswordError } from "./auth_service";
 
 export const UsernameTakenError = new HttpError(409, "UsernameTakenError", "Username has been taken");
 export const UserNotFoundError = new HttpError(404, "UserNotFoundError", "User not found error");
@@ -159,6 +160,8 @@ export function isChangeEmailError(err: ErrorCheck): ErrorCheckResponse {
             return { ok: true, error: BadRequestError };
         case InternalServerError.statusCode:
             return { ok: true, error: InternalServerError };
+        case WrongPasswordError.statusCode:
+            return { ok: true, error: WrongPasswordError };
     }
 
     return {
