@@ -130,6 +130,8 @@ export function isChangePasswordError(err: ErrorCheck): ErrorCheckResponse {
             return { ok: true, error: BadRequestError };
         case InternalServerError.statusCode:
             return { ok: true, error: InternalServerError };
+        case WrongPasswordError.statusCode:
+            return { ok: true, error: WrongPasswordError };
     }
 
     return {
@@ -160,8 +162,6 @@ export function isChangeEmailError(err: ErrorCheck): ErrorCheckResponse {
             return { ok: true, error: BadRequestError };
         case InternalServerError.statusCode:
             return { ok: true, error: InternalServerError };
-        case WrongPasswordError.statusCode:
-            return { ok: true, error: WrongPasswordError };
     }
 
     return {
