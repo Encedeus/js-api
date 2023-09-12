@@ -7,8 +7,9 @@ import {
 } from "./errors";
 import { RoleNotFoundError } from "./role_service";
 import {
+    UserChangeEmailRequest,
     UserChangeEmailResponse,
-    UserChangePasswordRequest, UserChangePasswordResponse, UserChangeUsernameResponse,
+    UserChangePasswordRequest, UserChangePasswordResponse, UserChangeUsernameRequest, UserChangeUsernameResponse,
     UserCreateRequest,
     UserDeleteRequest,
     UserFindOneRequest,
@@ -256,7 +257,7 @@ export class UsersService {
         };
     }
 
-    async changeEmail(changeReq: UserChangePasswordRequest): Promise<ChangeEmailResponse> {
+    async changeEmail(changeReq: UserChangeEmailRequest): Promise<ChangeEmailResponse> {
         const resp = await this.api.patch(`/user/${changeReq.userId?.value}/changeEmail`, changeReq).catch(err => err.response);
 
         const { ok, error } = isChangeEmailError(resp.status);
@@ -271,7 +272,7 @@ export class UsersService {
         };
     }
 
-    async changeUsername(changeReq: UserChangePasswordRequest): Promise<ChangeUsernameResponse> {
+    async changeUsername(changeReq: UserChangeUsernameRequest): Promise<ChangeUsernameResponse> {
         const resp = await this.api.patch(`/user/${changeReq.userId?.value}/changeUsername`, changeReq).catch(err => err.response);
 
         const { ok, error } = isChangeUsernameError(resp.status);
