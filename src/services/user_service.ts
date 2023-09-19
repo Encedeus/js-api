@@ -36,16 +36,16 @@ export function isUsernameTakenError(error: HttpError): boolean {
 
 export function isDeleteUserError(err: ErrorCheck): ErrorCheckResponse {
     switch (err instanceof HttpError ? (err as HttpError).statusCode : err) {
-        case UserNotFoundError.statusCode:
-            return { ok: true, error: RoleNotFoundError };
-        case UserDeletedError.statusCode:
-            return { ok: true, error: RoleNotFoundError };
-        case UnauthorisedError.statusCode:
-            return { ok: true, error: UnauthorisedError };
-        case BadRequestError.statusCode:
-            return { ok: true, error: BadRequestError };
-        case InternalServerError.statusCode:
-            return { ok: true, error: InternalServerError };
+    case UserNotFoundError.statusCode:
+        return {ok: true, error: RoleNotFoundError};
+    case UserDeletedError.statusCode:
+        return {ok: true, error: RoleNotFoundError};
+    case UnauthorisedError.statusCode:
+        return {ok: true, error: UnauthorisedError};
+    case BadRequestError.statusCode:
+        return {ok: true, error: BadRequestError};
+    case InternalServerError.statusCode:
+        return {ok: true, error: InternalServerError};
     }
 
     return {
@@ -55,14 +55,14 @@ export function isDeleteUserError(err: ErrorCheck): ErrorCheckResponse {
 
 export function isSetPfpError(err: ErrorCheck): ErrorCheckResponse {
     switch (err instanceof HttpError ? (err as HttpError).statusCode : err) {
-        case UserNotFoundError.statusCode:
-            return { ok: true, error: RoleNotFoundError };
-        case UnauthorisedError.statusCode:
-            return { ok: true, error: UnauthorisedError };
-        case BadRequestError.statusCode:
-            return { ok: true, error: BadRequestError };
-        case InternalServerError.statusCode:
-            return { ok: true, error: InternalServerError };
+    case UserNotFoundError.statusCode:
+        return {ok: true, error: RoleNotFoundError};
+    case UnauthorisedError.statusCode:
+        return {ok: true, error: UnauthorisedError};
+    case BadRequestError.statusCode:
+        return {ok: true, error: BadRequestError};
+    case InternalServerError.statusCode:
+        return {ok: true, error: InternalServerError};
     }
 
     return {
@@ -72,16 +72,16 @@ export function isSetPfpError(err: ErrorCheck): ErrorCheckResponse {
 
 export function isUpdateUserError(err: ErrorCheck): ErrorCheckResponse {
     switch (err instanceof HttpError ? (err as HttpError).statusCode : err) {
-        case RoleNotFoundError.statusCode:
-            return { ok: true, error: RoleNotFoundError };
-        case UnauthorisedError.statusCode:
-            return { ok: true, error: UnauthorisedError };
-        case UserDeletedError.statusCode:
-            return { ok: true, error: UserDeletedError };
-        case BadRequestError.statusCode:
-            return { ok: true, error: BadRequestError };
-        case InternalServerError.statusCode:
-            return { ok: true, error: InternalServerError };
+    case RoleNotFoundError.statusCode:
+        return {ok: true, error: RoleNotFoundError};
+    case UnauthorisedError.statusCode:
+        return {ok: true, error: UnauthorisedError};
+    case UserDeletedError.statusCode:
+        return {ok: true, error: UserDeletedError};
+    case BadRequestError.statusCode:
+        return {ok: true, error: BadRequestError};
+    case InternalServerError.statusCode:
+        return {ok: true, error: InternalServerError};
     }
 
     return {
@@ -91,12 +91,12 @@ export function isUpdateUserError(err: ErrorCheck): ErrorCheckResponse {
 
 export function isFindUserError(err: ErrorCheck): ErrorCheckResponse {
     switch (err instanceof HttpError ? (err as HttpError).statusCode : err) {
-        case UserNotFoundError.statusCode:
-            return { ok: true, error: RoleNotFoundError };
-        case UserDeletedError.statusCode:
-            return { ok: true, error: UsernameTakenError };
-        case InternalServerError.statusCode:
-            return { ok: true, error: InternalServerError };
+    case UserNotFoundError.statusCode:
+        return {ok: true, error: RoleNotFoundError};
+    case UserDeletedError.statusCode:
+        return {ok: true, error: UsernameTakenError};
+    case InternalServerError.statusCode:
+        return {ok: true, error: InternalServerError};
     }
 
     return {
@@ -106,16 +106,16 @@ export function isFindUserError(err: ErrorCheck): ErrorCheckResponse {
 
 export function isCreateUserError(err: ErrorCheck): ErrorCheckResponse {
     switch (err instanceof HttpError ? (err as HttpError).statusCode : err) {
-        case RoleNotFoundError.statusCode:
-            return { ok: true, error: RoleNotFoundError };
-        case UsernameTakenError.statusCode:
-            return { ok: true, error: UsernameTakenError };
-        case UnauthorisedError.statusCode:
-            return { ok: true, error: UnauthorisedError };
-        case BadRequestError.statusCode:
-            return { ok: true, error: BadRequestError };
-        case InternalServerError.statusCode:
-            return { ok: true, error: InternalServerError };
+    case RoleNotFoundError.statusCode:
+        return {ok: true, error: RoleNotFoundError};
+    case UsernameTakenError.statusCode:
+        return {ok: true, error: UsernameTakenError};
+    case UnauthorisedError.statusCode:
+        return {ok: true, error: UnauthorisedError};
+    case BadRequestError.statusCode:
+        return {ok: true, error: BadRequestError};
+    case InternalServerError.statusCode:
+        return {ok: true, error: InternalServerError};
     }
 
     return {
@@ -125,14 +125,16 @@ export function isCreateUserError(err: ErrorCheck): ErrorCheckResponse {
 
 export function isChangePasswordError(err: ErrorCheck): ErrorCheckResponse {
     switch (err instanceof HttpError ? (err as HttpError).statusCode : err) {
-        case UserNotFoundError.statusCode:
-            return { ok: true, error: UserNotFoundError };
-        case BadRequestError.statusCode:
-            return { ok: true, error: BadRequestError };
-        case InternalServerError.statusCode:
-            return { ok: true, error: InternalServerError };
-        case WrongPasswordError.statusCode:
-            return { ok: true, error: WrongPasswordError };
+    case UserNotFoundError.statusCode:
+        return {ok: true, error: UserNotFoundError};
+    case BadRequestError.statusCode:
+        return {ok: true, error: BadRequestError};
+    case InternalServerError.statusCode:
+        return {ok: true, error: InternalServerError};
+    case WrongPasswordError.statusCode:
+        return {ok: true, error: WrongPasswordError};
+    case UnauthorisedError.statusCode:
+        return { ok: true, error: UnauthorisedError };
     }
 
     return {
@@ -142,12 +144,14 @@ export function isChangePasswordError(err: ErrorCheck): ErrorCheckResponse {
 
 export function isChangeUsernameError(err: ErrorCheck): ErrorCheckResponse {
     switch (err instanceof HttpError ? (err as HttpError).statusCode : err) {
-        case UserNotFoundError.statusCode:
-            return { ok: true, error: UserNotFoundError };
-        case BadRequestError.statusCode:
-            return { ok: true, error: BadRequestError };
-        case InternalServerError.statusCode:
-            return { ok: true, error: InternalServerError };
+    case UserNotFoundError.statusCode:
+        return {ok: true, error: UserNotFoundError};
+    case BadRequestError.statusCode:
+        return {ok: true, error: BadRequestError};
+    case InternalServerError.statusCode:
+        return {ok: true, error: InternalServerError};
+    case UnauthorisedError.statusCode:
+        return {ok: true, error: UnauthorisedError};
     }
 
     return {
@@ -157,12 +161,14 @@ export function isChangeUsernameError(err: ErrorCheck): ErrorCheckResponse {
 
 export function isChangeEmailError(err: ErrorCheck): ErrorCheckResponse {
     switch (err instanceof HttpError ? (err as HttpError).statusCode : err) {
-        case UserNotFoundError.statusCode:
-            return { ok: true, error: UserNotFoundError };
-        case BadRequestError.statusCode:
-            return { ok: true, error: BadRequestError };
-        case InternalServerError.statusCode:
-            return { ok: true, error: InternalServerError };
+    case UserNotFoundError.statusCode:
+        return {ok: true, error: UserNotFoundError};
+    case BadRequestError.statusCode:
+        return {ok: true, error: BadRequestError};
+    case InternalServerError.statusCode:
+        return {ok: true, error: InternalServerError};
+    case UnauthorisedError.statusCode:
+        return {ok: true, error: UnauthorisedError};
     }
 
     return {
@@ -206,7 +212,7 @@ export class UsersService {
     async findUserById(findOneReq: UserFindOneRequest): Promise<FindUserResponse> {
         const resp = await this.api.get(`/user/${findOneReq.userId?.value}`).catch(err => err.response);
 
-        if(resp.status !== 200) {
+        if (resp.status !== 200) {
             return {
                 error: isFindUserError(resp.status).error,
             };
@@ -245,7 +251,7 @@ export class UsersService {
     async changePassword(changeReq: UserChangePasswordRequest): Promise<ChangePasswordResponse> {
         const resp = await this.api.patch(`/user/${changeReq.userId?.value}/changePassword`, changeReq).catch(err => err.response);
 
-        const { ok, error } = isChangePasswordError(resp.status);
+        const {ok, error} = isChangePasswordError(resp.status);
         if (ok) {
             return {
                 error,
@@ -260,7 +266,7 @@ export class UsersService {
     async changeEmail(changeReq: UserChangeEmailRequest): Promise<ChangeEmailResponse> {
         const resp = await this.api.patch(`/user/${changeReq.userId?.value}/changeEmail`, changeReq).catch(err => err.response);
 
-        const { ok, error } = isChangeEmailError(resp.status);
+        const {ok, error} = isChangeEmailError(resp.status);
         if (ok) {
             return {
                 error,
@@ -275,7 +281,7 @@ export class UsersService {
     async changeUsername(changeReq: UserChangeUsernameRequest): Promise<ChangeUsernameResponse> {
         const resp = await this.api.patch(`/user/${changeReq.userId?.value}/changeUsername`, changeReq).catch(err => err.response);
 
-        const { ok, error } = isChangeUsernameError(resp.status);
+        const {ok, error} = isChangeUsernameError(resp.status);
         if (ok) {
             return {
                 error,
