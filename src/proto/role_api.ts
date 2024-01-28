@@ -1,5 +1,5 @@
 /* eslint-disable */
-import _m0 from "protobufjs/minimal";
+import * as _m0 from "protobufjs/minimal";
 import { Role } from "./common";
 import { UUID } from "./generic";
 
@@ -90,8 +90,10 @@ export const RoleCreateRequest = {
 
   fromJSON(object: any): RoleCreateRequest {
     return {
-      name: isSet(object.name) ? String(object.name) : "",
-      permissions: Array.isArray(object?.permissions) ? object.permissions.map((e: any) => String(e)) : [],
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      permissions: globalThis.Array.isArray(object?.permissions)
+        ? object.permissions.map((e: any) => globalThis.String(e))
+        : [],
     };
   },
 
@@ -232,8 +234,10 @@ export const RoleUpdateRequest = {
   fromJSON(object: any): RoleUpdateRequest {
     return {
       id: isSet(object.id) ? UUID.fromJSON(object.id) : undefined,
-      name: isSet(object.name) ? String(object.name) : "",
-      permissions: Array.isArray(object?.permissions) ? object.permissions.map((e: any) => String(e)) : [],
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      permissions: globalThis.Array.isArray(object?.permissions)
+        ? object.permissions.map((e: any) => globalThis.String(e))
+        : [],
     };
   },
 
@@ -570,7 +574,7 @@ export const RoleFindManyResponse = {
   },
 
   fromJSON(object: any): RoleFindManyResponse {
-    return { roles: Array.isArray(object?.roles) ? object.roles.map((e: any) => Role.fromJSON(e)) : [] };
+    return { roles: globalThis.Array.isArray(object?.roles) ? object.roles.map((e: any) => Role.fromJSON(e)) : [] };
   },
 
   toJSON(message: RoleFindManyResponse): unknown {
@@ -594,7 +598,8 @@ export const RoleFindManyResponse = {
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 

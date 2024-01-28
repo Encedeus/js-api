@@ -1,5 +1,5 @@
 /* eslint-disable */
-import _m0 from "protobufjs/minimal";
+import * as _m0 from "protobufjs/minimal";
 import { AccountAPIKey } from "./common";
 import { UUID } from "./generic";
 
@@ -96,8 +96,10 @@ export const AccountAPIKeyCreateRequest = {
   fromJSON(object: any): AccountAPIKeyCreateRequest {
     return {
       userId: isSet(object.userId) ? UUID.fromJSON(object.userId) : undefined,
-      description: isSet(object.description) ? String(object.description) : "",
-      ipAddresses: Array.isArray(object?.ipAddresses) ? object.ipAddresses.map((e: any) => String(e)) : [],
+      description: isSet(object.description) ? globalThis.String(object.description) : "",
+      ipAddresses: globalThis.Array.isArray(object?.ipAddresses)
+        ? object.ipAddresses.map((e: any) => globalThis.String(e))
+        : [],
     };
   },
 
@@ -504,7 +506,7 @@ export const AccountAPIKeyFindManyResponse = {
 
   fromJSON(object: any): AccountAPIKeyFindManyResponse {
     return {
-      accountApiKeys: Array.isArray(object?.accountApiKeys)
+      accountApiKeys: globalThis.Array.isArray(object?.accountApiKeys)
         ? object.accountApiKeys.map((e: any) => AccountAPIKey.fromJSON(e))
         : [],
     };
@@ -533,7 +535,8 @@ export const AccountAPIKeyFindManyResponse = {
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 

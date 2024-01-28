@@ -1,10 +1,14 @@
 /* eslint-disable */
-import _m0 from "protobufjs/minimal";
+import * as _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "";
 
 export interface UUID {
   value: string;
+}
+
+export interface Port {
+  value: number;
 }
 
 export interface HttpResponse {
@@ -48,7 +52,7 @@ export const UUID = {
   },
 
   fromJSON(object: any): UUID {
-    return { value: isSet(object.value) ? String(object.value) : "" };
+    return { value: isSet(object.value) ? globalThis.String(object.value) : "" };
   },
 
   toJSON(message: UUID): unknown {
@@ -65,6 +69,63 @@ export const UUID = {
   fromPartial<I extends Exact<DeepPartial<UUID>, I>>(object: I): UUID {
     const message = createBaseUUID();
     message.value = object.value ?? "";
+    return message;
+  },
+};
+
+function createBasePort(): Port {
+  return { value: 0 };
+}
+
+export const Port = {
+  encode(message: Port, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.value !== 0) {
+      writer.uint32(8).uint32(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Port {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePort();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.value = reader.uint32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Port {
+    return { value: isSet(object.value) ? globalThis.Number(object.value) : 0 };
+  },
+
+  toJSON(message: Port): unknown {
+    const obj: any = {};
+    if (message.value !== 0) {
+      obj.value = Math.round(message.value);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<Port>, I>>(base?: I): Port {
+    return Port.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<Port>, I>>(object: I): Port {
+    const message = createBasePort();
+    message.value = object.value ?? 0;
     return message;
   },
 };
@@ -116,8 +177,8 @@ export const HttpResponse = {
 
   fromJSON(object: any): HttpResponse {
     return {
-      statusCode: isSet(object.statusCode) ? Number(object.statusCode) : 0,
-      message: isSet(object.message) ? String(object.message) : "",
+      statusCode: isSet(object.statusCode) ? globalThis.Number(object.statusCode) : 0,
+      message: isSet(object.message) ? globalThis.String(object.message) : "",
     };
   },
 
@@ -146,7 +207,8 @@ export const HttpResponse = {
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 

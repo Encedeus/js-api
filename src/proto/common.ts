@@ -1,6 +1,6 @@
 /* eslint-disable */
-import _m0 from "protobufjs/minimal";
-import { UUID } from "./generic";
+import * as _m0 from "protobufjs/minimal";
+import { Port, UUID } from "./generic";
 import { Timestamp } from "./google/protobuf/timestamp";
 
 export const protobufPackage = "";
@@ -91,6 +91,50 @@ export interface AccountAPIKeyToken {
   token: Token | undefined;
   ipAddresses: string[];
   description: string;
+}
+
+export interface Module {
+  store: ModuleStore | undefined;
+  manifest: ModuleManifest | undefined;
+  backendPort: Port | undefined;
+  rpcPort: Port | undefined;
+  frontendServer: ModuleFrontendServer | undefined;
+}
+
+export interface ModuleStore {
+  modulesFolderPath: string;
+  rpcPort: Port | undefined;
+}
+
+export interface ModuleManifest {
+  name: string;
+  authors: string[];
+  version: string;
+  frontend: ModuleManifestFrontend | undefined;
+  backend: ModuleManifestBackend | undefined;
+}
+
+export interface ModuleManifestFrontend {
+  tabName: string;
+  tabIconPath: string;
+  platform: ModulePlatform | undefined;
+}
+
+export interface ModuleManifestBackend {
+  main: string;
+  registeredCommands: string[];
+}
+
+export interface ModulePlatform {
+  value: string;
+}
+
+export interface ModuleFrontendServer {
+  platform: ModulePlatform | undefined;
+  environment: string;
+  entryPoint: string;
+  assetsPath: string;
+  port: Port | undefined;
 }
 
 function createBaseUser(): User {
@@ -213,9 +257,9 @@ export const User = {
       createdAt: isSet(object.createdAt) ? fromJsonTimestamp(object.createdAt) : undefined,
       updatedAt: isSet(object.updatedAt) ? fromJsonTimestamp(object.updatedAt) : undefined,
       deletedAt: isSet(object.deletedAt) ? fromJsonTimestamp(object.deletedAt) : undefined,
-      email: isSet(object.email) ? String(object.email) : "",
-      password: isSet(object.password) ? String(object.password) : "",
-      name: isSet(object.name) ? String(object.name) : "",
+      email: isSet(object.email) ? globalThis.String(object.email) : "",
+      password: isSet(object.password) ? globalThis.String(object.password) : "",
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
       roleId: isSet(object.roleId) ? UUID.fromJSON(object.roleId) : undefined,
     };
   },
@@ -359,8 +403,10 @@ export const Role = {
       createdAt: isSet(object.createdAt) ? fromJsonTimestamp(object.createdAt) : undefined,
       updatedAt: isSet(object.updatedAt) ? fromJsonTimestamp(object.updatedAt) : undefined,
       deletedAt: isSet(object.deletedAt) ? fromJsonTimestamp(object.deletedAt) : undefined,
-      name: isSet(object.name) ? String(object.name) : "",
-      permissions: Array.isArray(object?.permissions) ? object.permissions.map((e: any) => String(e)) : [],
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      permissions: globalThis.Array.isArray(object?.permissions)
+        ? object.permissions.map((e: any) => globalThis.String(e))
+        : [],
     };
   },
 
@@ -510,9 +556,11 @@ export const AccountAPIKey = {
       id: isSet(object.id) ? UUID.fromJSON(object.id) : undefined,
       createdAt: isSet(object.createdAt) ? fromJsonTimestamp(object.createdAt) : undefined,
       updatedAt: isSet(object.updatedAt) ? fromJsonTimestamp(object.updatedAt) : undefined,
-      description: isSet(object.description) ? String(object.description) : "",
-      ipAddresses: Array.isArray(object?.ipAddresses) ? object.ipAddresses.map((e: any) => String(e)) : [],
-      key: isSet(object.key) ? String(object.key) : "",
+      description: isSet(object.description) ? globalThis.String(object.description) : "",
+      ipAddresses: globalThis.Array.isArray(object?.ipAddresses)
+        ? object.ipAddresses.map((e: any) => globalThis.String(e))
+        : [],
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
       userId: isSet(object.userId) ? UUID.fromJSON(object.userId) : undefined,
     };
   },
@@ -809,8 +857,10 @@ export const AccountAPIKeyToken = {
   fromJSON(object: any): AccountAPIKeyToken {
     return {
       token: isSet(object.token) ? Token.fromJSON(object.token) : undefined,
-      ipAddresses: Array.isArray(object?.ipAddresses) ? object.ipAddresses.map((e: any) => String(e)) : [],
-      description: isSet(object.description) ? String(object.description) : "",
+      ipAddresses: globalThis.Array.isArray(object?.ipAddresses)
+        ? object.ipAddresses.map((e: any) => globalThis.String(e))
+        : [],
+      description: isSet(object.description) ? globalThis.String(object.description) : "",
     };
   },
 
@@ -840,10 +890,690 @@ export const AccountAPIKeyToken = {
   },
 };
 
+function createBaseModule(): Module {
+  return {
+    store: undefined,
+    manifest: undefined,
+    backendPort: undefined,
+    rpcPort: undefined,
+    frontendServer: undefined,
+  };
+}
+
+export const Module = {
+  encode(message: Module, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.store !== undefined) {
+      ModuleStore.encode(message.store, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.manifest !== undefined) {
+      ModuleManifest.encode(message.manifest, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.backendPort !== undefined) {
+      Port.encode(message.backendPort, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.rpcPort !== undefined) {
+      Port.encode(message.rpcPort, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.frontendServer !== undefined) {
+      ModuleFrontendServer.encode(message.frontendServer, writer.uint32(42).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Module {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseModule();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.store = ModuleStore.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.manifest = ModuleManifest.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.backendPort = Port.decode(reader, reader.uint32());
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.rpcPort = Port.decode(reader, reader.uint32());
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.frontendServer = ModuleFrontendServer.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Module {
+    return {
+      store: isSet(object.store) ? ModuleStore.fromJSON(object.store) : undefined,
+      manifest: isSet(object.manifest) ? ModuleManifest.fromJSON(object.manifest) : undefined,
+      backendPort: isSet(object.backendPort) ? Port.fromJSON(object.backendPort) : undefined,
+      rpcPort: isSet(object.rpcPort) ? Port.fromJSON(object.rpcPort) : undefined,
+      frontendServer: isSet(object.frontendServer) ? ModuleFrontendServer.fromJSON(object.frontendServer) : undefined,
+    };
+  },
+
+  toJSON(message: Module): unknown {
+    const obj: any = {};
+    if (message.store !== undefined) {
+      obj.store = ModuleStore.toJSON(message.store);
+    }
+    if (message.manifest !== undefined) {
+      obj.manifest = ModuleManifest.toJSON(message.manifest);
+    }
+    if (message.backendPort !== undefined) {
+      obj.backendPort = Port.toJSON(message.backendPort);
+    }
+    if (message.rpcPort !== undefined) {
+      obj.rpcPort = Port.toJSON(message.rpcPort);
+    }
+    if (message.frontendServer !== undefined) {
+      obj.frontendServer = ModuleFrontendServer.toJSON(message.frontendServer);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<Module>, I>>(base?: I): Module {
+    return Module.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<Module>, I>>(object: I): Module {
+    const message = createBaseModule();
+    message.store = (object.store !== undefined && object.store !== null)
+      ? ModuleStore.fromPartial(object.store)
+      : undefined;
+    message.manifest = (object.manifest !== undefined && object.manifest !== null)
+      ? ModuleManifest.fromPartial(object.manifest)
+      : undefined;
+    message.backendPort = (object.backendPort !== undefined && object.backendPort !== null)
+      ? Port.fromPartial(object.backendPort)
+      : undefined;
+    message.rpcPort = (object.rpcPort !== undefined && object.rpcPort !== null)
+      ? Port.fromPartial(object.rpcPort)
+      : undefined;
+    message.frontendServer = (object.frontendServer !== undefined && object.frontendServer !== null)
+      ? ModuleFrontendServer.fromPartial(object.frontendServer)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseModuleStore(): ModuleStore {
+  return { modulesFolderPath: "", rpcPort: undefined };
+}
+
+export const ModuleStore = {
+  encode(message: ModuleStore, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.modulesFolderPath !== "") {
+      writer.uint32(10).string(message.modulesFolderPath);
+    }
+    if (message.rpcPort !== undefined) {
+      Port.encode(message.rpcPort, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ModuleStore {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseModuleStore();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.modulesFolderPath = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.rpcPort = Port.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ModuleStore {
+    return {
+      modulesFolderPath: isSet(object.modulesFolderPath) ? globalThis.String(object.modulesFolderPath) : "",
+      rpcPort: isSet(object.rpcPort) ? Port.fromJSON(object.rpcPort) : undefined,
+    };
+  },
+
+  toJSON(message: ModuleStore): unknown {
+    const obj: any = {};
+    if (message.modulesFolderPath !== "") {
+      obj.modulesFolderPath = message.modulesFolderPath;
+    }
+    if (message.rpcPort !== undefined) {
+      obj.rpcPort = Port.toJSON(message.rpcPort);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ModuleStore>, I>>(base?: I): ModuleStore {
+    return ModuleStore.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ModuleStore>, I>>(object: I): ModuleStore {
+    const message = createBaseModuleStore();
+    message.modulesFolderPath = object.modulesFolderPath ?? "";
+    message.rpcPort = (object.rpcPort !== undefined && object.rpcPort !== null)
+      ? Port.fromPartial(object.rpcPort)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseModuleManifest(): ModuleManifest {
+  return { name: "", authors: [], version: "", frontend: undefined, backend: undefined };
+}
+
+export const ModuleManifest = {
+  encode(message: ModuleManifest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    for (const v of message.authors) {
+      writer.uint32(18).string(v!);
+    }
+    if (message.version !== "") {
+      writer.uint32(26).string(message.version);
+    }
+    if (message.frontend !== undefined) {
+      ModuleManifestFrontend.encode(message.frontend, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.backend !== undefined) {
+      ModuleManifestBackend.encode(message.backend, writer.uint32(42).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ModuleManifest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseModuleManifest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.authors.push(reader.string());
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.version = reader.string();
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.frontend = ModuleManifestFrontend.decode(reader, reader.uint32());
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.backend = ModuleManifestBackend.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ModuleManifest {
+    return {
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      authors: globalThis.Array.isArray(object?.authors) ? object.authors.map((e: any) => globalThis.String(e)) : [],
+      version: isSet(object.version) ? globalThis.String(object.version) : "",
+      frontend: isSet(object.frontend) ? ModuleManifestFrontend.fromJSON(object.frontend) : undefined,
+      backend: isSet(object.backend) ? ModuleManifestBackend.fromJSON(object.backend) : undefined,
+    };
+  },
+
+  toJSON(message: ModuleManifest): unknown {
+    const obj: any = {};
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.authors?.length) {
+      obj.authors = message.authors;
+    }
+    if (message.version !== "") {
+      obj.version = message.version;
+    }
+    if (message.frontend !== undefined) {
+      obj.frontend = ModuleManifestFrontend.toJSON(message.frontend);
+    }
+    if (message.backend !== undefined) {
+      obj.backend = ModuleManifestBackend.toJSON(message.backend);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ModuleManifest>, I>>(base?: I): ModuleManifest {
+    return ModuleManifest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ModuleManifest>, I>>(object: I): ModuleManifest {
+    const message = createBaseModuleManifest();
+    message.name = object.name ?? "";
+    message.authors = object.authors?.map((e) => e) || [];
+    message.version = object.version ?? "";
+    message.frontend = (object.frontend !== undefined && object.frontend !== null)
+      ? ModuleManifestFrontend.fromPartial(object.frontend)
+      : undefined;
+    message.backend = (object.backend !== undefined && object.backend !== null)
+      ? ModuleManifestBackend.fromPartial(object.backend)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseModuleManifestFrontend(): ModuleManifestFrontend {
+  return { tabName: "", tabIconPath: "", platform: undefined };
+}
+
+export const ModuleManifestFrontend = {
+  encode(message: ModuleManifestFrontend, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.tabName !== "") {
+      writer.uint32(10).string(message.tabName);
+    }
+    if (message.tabIconPath !== "") {
+      writer.uint32(18).string(message.tabIconPath);
+    }
+    if (message.platform !== undefined) {
+      ModulePlatform.encode(message.platform, writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ModuleManifestFrontend {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseModuleManifestFrontend();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.tabName = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.tabIconPath = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.platform = ModulePlatform.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ModuleManifestFrontend {
+    return {
+      tabName: isSet(object.tabName) ? globalThis.String(object.tabName) : "",
+      tabIconPath: isSet(object.tabIconPath) ? globalThis.String(object.tabIconPath) : "",
+      platform: isSet(object.platform) ? ModulePlatform.fromJSON(object.platform) : undefined,
+    };
+  },
+
+  toJSON(message: ModuleManifestFrontend): unknown {
+    const obj: any = {};
+    if (message.tabName !== "") {
+      obj.tabName = message.tabName;
+    }
+    if (message.tabIconPath !== "") {
+      obj.tabIconPath = message.tabIconPath;
+    }
+    if (message.platform !== undefined) {
+      obj.platform = ModulePlatform.toJSON(message.platform);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ModuleManifestFrontend>, I>>(base?: I): ModuleManifestFrontend {
+    return ModuleManifestFrontend.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ModuleManifestFrontend>, I>>(object: I): ModuleManifestFrontend {
+    const message = createBaseModuleManifestFrontend();
+    message.tabName = object.tabName ?? "";
+    message.tabIconPath = object.tabIconPath ?? "";
+    message.platform = (object.platform !== undefined && object.platform !== null)
+      ? ModulePlatform.fromPartial(object.platform)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseModuleManifestBackend(): ModuleManifestBackend {
+  return { main: "", registeredCommands: [] };
+}
+
+export const ModuleManifestBackend = {
+  encode(message: ModuleManifestBackend, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.main !== "") {
+      writer.uint32(10).string(message.main);
+    }
+    for (const v of message.registeredCommands) {
+      writer.uint32(18).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ModuleManifestBackend {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseModuleManifestBackend();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.main = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.registeredCommands.push(reader.string());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ModuleManifestBackend {
+    return {
+      main: isSet(object.main) ? globalThis.String(object.main) : "",
+      registeredCommands: globalThis.Array.isArray(object?.registeredCommands)
+        ? object.registeredCommands.map((e: any) => globalThis.String(e))
+        : [],
+    };
+  },
+
+  toJSON(message: ModuleManifestBackend): unknown {
+    const obj: any = {};
+    if (message.main !== "") {
+      obj.main = message.main;
+    }
+    if (message.registeredCommands?.length) {
+      obj.registeredCommands = message.registeredCommands;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ModuleManifestBackend>, I>>(base?: I): ModuleManifestBackend {
+    return ModuleManifestBackend.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ModuleManifestBackend>, I>>(object: I): ModuleManifestBackend {
+    const message = createBaseModuleManifestBackend();
+    message.main = object.main ?? "";
+    message.registeredCommands = object.registeredCommands?.map((e) => e) || [];
+    return message;
+  },
+};
+
+function createBaseModulePlatform(): ModulePlatform {
+  return { value: "" };
+}
+
+export const ModulePlatform = {
+  encode(message: ModulePlatform, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.value !== "") {
+      writer.uint32(10).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ModulePlatform {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseModulePlatform();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.value = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ModulePlatform {
+    return { value: isSet(object.value) ? globalThis.String(object.value) : "" };
+  },
+
+  toJSON(message: ModulePlatform): unknown {
+    const obj: any = {};
+    if (message.value !== "") {
+      obj.value = message.value;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ModulePlatform>, I>>(base?: I): ModulePlatform {
+    return ModulePlatform.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ModulePlatform>, I>>(object: I): ModulePlatform {
+    const message = createBaseModulePlatform();
+    message.value = object.value ?? "";
+    return message;
+  },
+};
+
+function createBaseModuleFrontendServer(): ModuleFrontendServer {
+  return { platform: undefined, environment: "", entryPoint: "", assetsPath: "", port: undefined };
+}
+
+export const ModuleFrontendServer = {
+  encode(message: ModuleFrontendServer, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.platform !== undefined) {
+      ModulePlatform.encode(message.platform, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.environment !== "") {
+      writer.uint32(18).string(message.environment);
+    }
+    if (message.entryPoint !== "") {
+      writer.uint32(26).string(message.entryPoint);
+    }
+    if (message.assetsPath !== "") {
+      writer.uint32(34).string(message.assetsPath);
+    }
+    if (message.port !== undefined) {
+      Port.encode(message.port, writer.uint32(42).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ModuleFrontendServer {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseModuleFrontendServer();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.platform = ModulePlatform.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.environment = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.entryPoint = reader.string();
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.assetsPath = reader.string();
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.port = Port.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ModuleFrontendServer {
+    return {
+      platform: isSet(object.platform) ? ModulePlatform.fromJSON(object.platform) : undefined,
+      environment: isSet(object.environment) ? globalThis.String(object.environment) : "",
+      entryPoint: isSet(object.entryPoint) ? globalThis.String(object.entryPoint) : "",
+      assetsPath: isSet(object.assetsPath) ? globalThis.String(object.assetsPath) : "",
+      port: isSet(object.port) ? Port.fromJSON(object.port) : undefined,
+    };
+  },
+
+  toJSON(message: ModuleFrontendServer): unknown {
+    const obj: any = {};
+    if (message.platform !== undefined) {
+      obj.platform = ModulePlatform.toJSON(message.platform);
+    }
+    if (message.environment !== "") {
+      obj.environment = message.environment;
+    }
+    if (message.entryPoint !== "") {
+      obj.entryPoint = message.entryPoint;
+    }
+    if (message.assetsPath !== "") {
+      obj.assetsPath = message.assetsPath;
+    }
+    if (message.port !== undefined) {
+      obj.port = Port.toJSON(message.port);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ModuleFrontendServer>, I>>(base?: I): ModuleFrontendServer {
+    return ModuleFrontendServer.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ModuleFrontendServer>, I>>(object: I): ModuleFrontendServer {
+    const message = createBaseModuleFrontendServer();
+    message.platform = (object.platform !== undefined && object.platform !== null)
+      ? ModulePlatform.fromPartial(object.platform)
+      : undefined;
+    message.environment = object.environment ?? "";
+    message.entryPoint = object.entryPoint ?? "";
+    message.assetsPath = object.assetsPath ?? "";
+    message.port = (object.port !== undefined && object.port !== null) ? Port.fromPartial(object.port) : undefined;
+    return message;
+  },
+};
+
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
@@ -852,7 +1582,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function toTimestamp(date: Date): Timestamp {
-  const seconds = date.getTime() / 1_000;
+  const seconds = Math.trunc(date.getTime() / 1_000);
   const nanos = (date.getTime() % 1_000) * 1_000_000;
   return { seconds, nanos };
 }
@@ -860,14 +1590,14 @@ function toTimestamp(date: Date): Timestamp {
 function fromTimestamp(t: Timestamp): Date {
   let millis = (t.seconds || 0) * 1_000;
   millis += (t.nanos || 0) / 1_000_000;
-  return new Date(millis);
+  return new globalThis.Date(millis);
 }
 
 function fromJsonTimestamp(o: any): Date {
-  if (o instanceof Date) {
+  if (o instanceof globalThis.Date) {
     return o;
   } else if (typeof o === "string") {
-    return new Date(o);
+    return new globalThis.Date(o);
   } else {
     return fromTimestamp(Timestamp.fromJSON(o));
   }

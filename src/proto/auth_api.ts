@@ -1,5 +1,5 @@
 /* eslint-disable */
-import _m0 from "protobufjs/minimal";
+import * as _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "";
 
@@ -68,8 +68,8 @@ export const UserSignInRequest = {
 
   fromJSON(object: any): UserSignInRequest {
     return {
-      uid: isSet(object.uid) ? String(object.uid) : "",
-      password: isSet(object.password) ? String(object.password) : "",
+      uid: isSet(object.uid) ? globalThis.String(object.uid) : "",
+      password: isSet(object.password) ? globalThis.String(object.password) : "",
     };
   },
 
@@ -142,8 +142,8 @@ export const UserSignInResponse = {
 
   fromJSON(object: any): UserSignInResponse {
     return {
-      accessToken: isSet(object.accessToken) ? String(object.accessToken) : "",
-      refreshToken: isSet(object.refreshToken) ? String(object.refreshToken) : "",
+      accessToken: isSet(object.accessToken) ? globalThis.String(object.accessToken) : "",
+      refreshToken: isSet(object.refreshToken) ? globalThis.String(object.refreshToken) : "",
     };
   },
 
@@ -205,7 +205,7 @@ export const AccessTokenRefreshRequest = {
   },
 
   fromJSON(object: any): AccessTokenRefreshRequest {
-    return { refreshToken: isSet(object.refreshToken) ? String(object.refreshToken) : "" };
+    return { refreshToken: isSet(object.refreshToken) ? globalThis.String(object.refreshToken) : "" };
   },
 
   toJSON(message: AccessTokenRefreshRequest): unknown {
@@ -262,7 +262,7 @@ export const AccessTokenRefreshResponse = {
   },
 
   fromJSON(object: any): AccessTokenRefreshResponse {
-    return { accessToken: isSet(object.accessToken) ? String(object.accessToken) : "" };
+    return { accessToken: isSet(object.accessToken) ? globalThis.String(object.accessToken) : "" };
   },
 
   toJSON(message: AccessTokenRefreshResponse): unknown {
@@ -286,7 +286,8 @@ export const AccessTokenRefreshResponse = {
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 

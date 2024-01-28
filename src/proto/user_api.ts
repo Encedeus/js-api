@@ -1,5 +1,5 @@
 /* eslint-disable */
-import _m0 from "protobufjs/minimal";
+import * as _m0 from "protobufjs/minimal";
 import { User } from "./common";
 import { UUID } from "./generic";
 
@@ -155,11 +155,11 @@ export const UserCreateRequest = {
 
   fromJSON(object: any): UserCreateRequest {
     return {
-      name: isSet(object.name) ? String(object.name) : "",
-      email: isSet(object.email) ? String(object.email) : "",
-      password: isSet(object.password) ? String(object.password) : "",
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      email: isSet(object.email) ? globalThis.String(object.email) : "",
+      password: isSet(object.password) ? globalThis.String(object.password) : "",
       roleId: isSet(object.roleId) ? UUID.fromJSON(object.roleId) : undefined,
-      roleName: isSet(object.roleName) ? String(object.roleName) : "",
+      roleName: isSet(object.roleName) ? globalThis.String(object.roleName) : "",
     };
   },
 
@@ -344,11 +344,11 @@ export const UserUpdateRequest = {
   fromJSON(object: any): UserUpdateRequest {
     return {
       userId: isSet(object.userId) ? UUID.fromJSON(object.userId) : undefined,
-      name: isSet(object.name) ? String(object.name) : "",
-      email: isSet(object.email) ? String(object.email) : "",
-      password: isSet(object.password) ? String(object.password) : "",
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      email: isSet(object.email) ? globalThis.String(object.email) : "",
+      password: isSet(object.password) ? globalThis.String(object.password) : "",
       roleId: isSet(object.roleId) ? UUID.fromJSON(object.roleId) : undefined,
-      roleName: isSet(object.roleName) ? String(object.roleName) : "",
+      roleName: isSet(object.roleName) ? globalThis.String(object.roleName) : "",
     };
   },
 
@@ -705,7 +705,7 @@ export const UserFindManyResponse = {
   },
 
   fromJSON(object: any): UserFindManyResponse {
-    return { users: Array.isArray(object?.users) ? object.users.map((e: any) => User.fromJSON(e)) : [] };
+    return { users: globalThis.Array.isArray(object?.users) ? object.users.map((e: any) => User.fromJSON(e)) : [] };
   },
 
   toJSON(message: UserFindManyResponse): unknown {
@@ -784,8 +784,8 @@ export const UserChangePasswordRequest = {
   fromJSON(object: any): UserChangePasswordRequest {
     return {
       userId: isSet(object.userId) ? UUID.fromJSON(object.userId) : undefined,
-      oldPassword: isSet(object.oldPassword) ? String(object.oldPassword) : "",
-      newPassword: isSet(object.newPassword) ? String(object.newPassword) : "",
+      oldPassword: isSet(object.oldPassword) ? globalThis.String(object.oldPassword) : "",
+      newPassword: isSet(object.newPassword) ? globalThis.String(object.newPassword) : "",
     };
   },
 
@@ -918,8 +918,8 @@ export const UserChangeUsernameRequest = {
   fromJSON(object: any): UserChangeUsernameRequest {
     return {
       userId: isSet(object.userId) ? UUID.fromJSON(object.userId) : undefined,
-      oldUsername: isSet(object.oldUsername) ? String(object.oldUsername) : "",
-      newUsername: isSet(object.newUsername) ? String(object.newUsername) : "",
+      oldUsername: isSet(object.oldUsername) ? globalThis.String(object.oldUsername) : "",
+      newUsername: isSet(object.newUsername) ? globalThis.String(object.newUsername) : "",
     };
   },
 
@@ -1052,8 +1052,8 @@ export const UserChangeEmailRequest = {
   fromJSON(object: any): UserChangeEmailRequest {
     return {
       userId: isSet(object.userId) ? UUID.fromJSON(object.userId) : undefined,
-      oldEmail: isSet(object.oldEmail) ? String(object.oldEmail) : "",
-      newEmail: isSet(object.newEmail) ? String(object.newEmail) : "",
+      oldEmail: isSet(object.oldEmail) ? globalThis.String(object.oldEmail) : "",
+      newEmail: isSet(object.newEmail) ? globalThis.String(object.newEmail) : "",
     };
   },
 
@@ -1131,7 +1131,8 @@ export const UserChangeEmailResponse = {
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 

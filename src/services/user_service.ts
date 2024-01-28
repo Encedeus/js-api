@@ -128,7 +128,7 @@ export function isChangePasswordError(err: ErrorCheck): ErrorCheckResponse {
     case UserNotFoundError.statusCode:
         return {ok: true, error: UserNotFoundError};
     case BadRequestError.statusCode:
-        return {ok: true, error: BadRequestError};
+        return {ok: true, error: new HttpError(400, "BadRequestError", (err as HttpError).message)};
     case InternalServerError.statusCode:
         return {ok: true, error: InternalServerError};
     case WrongPasswordError.statusCode:
@@ -147,7 +147,7 @@ export function isChangeUsernameError(err: ErrorCheck): ErrorCheckResponse {
     case UserNotFoundError.statusCode:
         return {ok: true, error: UserNotFoundError};
     case BadRequestError.statusCode:
-        return {ok: true, error: BadRequestError};
+        return {ok: true, error: new HttpError(400, "BadRequestError", (err as HttpError).message)};
     case InternalServerError.statusCode:
         return {ok: true, error: InternalServerError};
     case UnauthorisedError.statusCode:
@@ -164,7 +164,7 @@ export function isChangeEmailError(err: ErrorCheck): ErrorCheckResponse {
     case UserNotFoundError.statusCode:
         return {ok: true, error: UserNotFoundError};
     case BadRequestError.statusCode:
-        return {ok: true, error: BadRequestError};
+        return {ok: true, error: new HttpError(400, "BadRequestError", (err as HttpError).message)};
     case InternalServerError.statusCode:
         return {ok: true, error: InternalServerError};
     case UnauthorisedError.statusCode:
