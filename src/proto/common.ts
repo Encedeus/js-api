@@ -1,5 +1,4 @@
 /* eslint-disable */
-import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Port, UUID } from "./generic";
 import { Timestamp } from "./google/protobuf/timestamp";
@@ -150,8 +149,8 @@ export interface Node {
   cpuBaseClock: number;
   cores: number;
   logicalCores: number;
-  ram: number;
-  storage: number;
+  ram: string;
+  storage: string;
   skyhookApiKey: string;
 }
 
@@ -165,10 +164,11 @@ export interface Server {
   variant: CraterVariant | undefined;
   owner: User | undefined;
   node: Node | undefined;
-  ram: number;
-  storage: number;
+  ram: string;
+  storage: string;
   logicalCores: number;
   port: Port | undefined;
+  sftpPassword: string;
 }
 
 export interface Crater {
@@ -1629,8 +1629,8 @@ function createBaseNode(): Node {
     cpuBaseClock: 0,
     cores: 0,
     logicalCores: 0,
-    ram: 0,
-    storage: 0,
+    ram: "",
+    storage: "",
     skyhookApiKey: "",
   };
 }
@@ -1670,11 +1670,11 @@ export const Node = {
     if (message.logicalCores !== 0) {
       writer.uint32(88).uint32(message.logicalCores);
     }
-    if (message.ram !== 0) {
-      writer.uint32(96).uint64(message.ram);
+    if (message.ram !== "") {
+      writer.uint32(98).string(message.ram);
     }
-    if (message.storage !== 0) {
-      writer.uint32(104).uint64(message.storage);
+    if (message.storage !== "") {
+      writer.uint32(106).string(message.storage);
     }
     if (message.skyhookApiKey !== "") {
       writer.uint32(114).string(message.skyhookApiKey);
@@ -1767,18 +1767,18 @@ export const Node = {
           message.logicalCores = reader.uint32();
           continue;
         case 12:
-          if (tag !== 96) {
+          if (tag !== 98) {
             break;
           }
 
-          message.ram = longToNumber(reader.uint64() as Long);
+          message.ram = reader.string();
           continue;
         case 13:
-          if (tag !== 104) {
+          if (tag !== 106) {
             break;
           }
 
-          message.storage = longToNumber(reader.uint64() as Long);
+          message.storage = reader.string();
           continue;
         case 14:
           if (tag !== 114) {
@@ -1809,8 +1809,8 @@ export const Node = {
       cpuBaseClock: isSet(object.cpuBaseClock) ? globalThis.Number(object.cpuBaseClock) : 0,
       cores: isSet(object.cores) ? globalThis.Number(object.cores) : 0,
       logicalCores: isSet(object.logicalCores) ? globalThis.Number(object.logicalCores) : 0,
-      ram: isSet(object.ram) ? globalThis.Number(object.ram) : 0,
-      storage: isSet(object.storage) ? globalThis.Number(object.storage) : 0,
+      ram: isSet(object.ram) ? globalThis.String(object.ram) : "",
+      storage: isSet(object.storage) ? globalThis.String(object.storage) : "",
       skyhookApiKey: isSet(object.skyhookApiKey) ? globalThis.String(object.skyhookApiKey) : "",
     };
   },
@@ -1850,11 +1850,11 @@ export const Node = {
     if (message.logicalCores !== 0) {
       obj.logicalCores = Math.round(message.logicalCores);
     }
-    if (message.ram !== 0) {
-      obj.ram = Math.round(message.ram);
+    if (message.ram !== "") {
+      obj.ram = message.ram;
     }
-    if (message.storage !== 0) {
-      obj.storage = Math.round(message.storage);
+    if (message.storage !== "") {
+      obj.storage = message.storage;
     }
     if (message.skyhookApiKey !== "") {
       obj.skyhookApiKey = message.skyhookApiKey;
@@ -1878,8 +1878,8 @@ export const Node = {
     message.cpuBaseClock = object.cpuBaseClock ?? 0;
     message.cores = object.cores ?? 0;
     message.logicalCores = object.logicalCores ?? 0;
-    message.ram = object.ram ?? 0;
-    message.storage = object.storage ?? 0;
+    message.ram = object.ram ?? "";
+    message.storage = object.storage ?? "";
     message.skyhookApiKey = object.skyhookApiKey ?? "";
     return message;
   },
@@ -1896,10 +1896,11 @@ function createBaseServer(): Server {
     variant: undefined,
     owner: undefined,
     node: undefined,
-    ram: 0,
-    storage: 0,
+    ram: "",
+    storage: "",
     logicalCores: 0,
     port: undefined,
+    sftpPassword: "",
   };
 }
 
@@ -1932,17 +1933,20 @@ export const Server = {
     if (message.node !== undefined) {
       Node.encode(message.node, writer.uint32(74).fork()).ldelim();
     }
-    if (message.ram !== 0) {
-      writer.uint32(80).uint64(message.ram);
+    if (message.ram !== "") {
+      writer.uint32(82).string(message.ram);
     }
-    if (message.storage !== 0) {
-      writer.uint32(88).uint64(message.storage);
+    if (message.storage !== "") {
+      writer.uint32(90).string(message.storage);
     }
     if (message.logicalCores !== 0) {
       writer.uint32(96).uint32(message.logicalCores);
     }
     if (message.port !== undefined) {
       Port.encode(message.port, writer.uint32(106).fork()).ldelim();
+    }
+    if (message.sftpPassword !== "") {
+      writer.uint32(114).string(message.sftpPassword);
     }
     return writer;
   },
@@ -2018,18 +2022,18 @@ export const Server = {
           message.node = Node.decode(reader, reader.uint32());
           continue;
         case 10:
-          if (tag !== 80) {
+          if (tag !== 82) {
             break;
           }
 
-          message.ram = longToNumber(reader.uint64() as Long);
+          message.ram = reader.string();
           continue;
         case 11:
-          if (tag !== 88) {
+          if (tag !== 90) {
             break;
           }
 
-          message.storage = longToNumber(reader.uint64() as Long);
+          message.storage = reader.string();
           continue;
         case 12:
           if (tag !== 96) {
@@ -2044,6 +2048,13 @@ export const Server = {
           }
 
           message.port = Port.decode(reader, reader.uint32());
+          continue;
+        case 14:
+          if (tag !== 114) {
+            break;
+          }
+
+          message.sftpPassword = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -2065,10 +2076,11 @@ export const Server = {
       variant: isSet(object.variant) ? CraterVariant.fromJSON(object.variant) : undefined,
       owner: isSet(object.owner) ? User.fromJSON(object.owner) : undefined,
       node: isSet(object.node) ? Node.fromJSON(object.node) : undefined,
-      ram: isSet(object.ram) ? globalThis.Number(object.ram) : 0,
-      storage: isSet(object.storage) ? globalThis.Number(object.storage) : 0,
+      ram: isSet(object.ram) ? globalThis.String(object.ram) : "",
+      storage: isSet(object.storage) ? globalThis.String(object.storage) : "",
       logicalCores: isSet(object.logicalCores) ? globalThis.Number(object.logicalCores) : 0,
       port: isSet(object.port) ? Port.fromJSON(object.port) : undefined,
+      sftpPassword: isSet(object.sftpPassword) ? globalThis.String(object.sftpPassword) : "",
     };
   },
 
@@ -2101,17 +2113,20 @@ export const Server = {
     if (message.node !== undefined) {
       obj.node = Node.toJSON(message.node);
     }
-    if (message.ram !== 0) {
-      obj.ram = Math.round(message.ram);
+    if (message.ram !== "") {
+      obj.ram = message.ram;
     }
-    if (message.storage !== 0) {
-      obj.storage = Math.round(message.storage);
+    if (message.storage !== "") {
+      obj.storage = message.storage;
     }
     if (message.logicalCores !== 0) {
       obj.logicalCores = Math.round(message.logicalCores);
     }
     if (message.port !== undefined) {
       obj.port = Port.toJSON(message.port);
+    }
+    if (message.sftpPassword !== "") {
+      obj.sftpPassword = message.sftpPassword;
     }
     return obj;
   },
@@ -2134,10 +2149,11 @@ export const Server = {
       : undefined;
     message.owner = (object.owner !== undefined && object.owner !== null) ? User.fromPartial(object.owner) : undefined;
     message.node = (object.node !== undefined && object.node !== null) ? Node.fromPartial(object.node) : undefined;
-    message.ram = object.ram ?? 0;
-    message.storage = object.storage ?? 0;
+    message.ram = object.ram ?? "";
+    message.storage = object.storage ?? "";
     message.logicalCores = object.logicalCores ?? 0;
     message.port = (object.port !== undefined && object.port !== null) ? Port.fromPartial(object.port) : undefined;
+    message.sftpPassword = object.sftpPassword ?? "";
     return message;
   },
 };
@@ -2371,18 +2387,6 @@ function fromJsonTimestamp(o: any): Date {
   } else {
     return fromTimestamp(Timestamp.fromJSON(o));
   }
-}
-
-function longToNumber(long: Long): number {
-  if (long.gt(globalThis.Number.MAX_SAFE_INTEGER)) {
-    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
-  }
-  return long.toNumber();
-}
-
-if (_m0.util.Long !== Long) {
-  _m0.util.Long = Long as any;
-  _m0.configure();
 }
 
 function isSet(value: any): boolean {
