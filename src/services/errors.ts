@@ -1,3 +1,6 @@
+import {Api} from "google-protobuf/google/protobuf/api_pb";
+import {EncedeusAPI} from "../api";
+
 export class HttpError extends Error {
     private readonly _statusCode: number;
 
@@ -34,6 +37,10 @@ export function isBadRequestError(err: HttpError): boolean {
 
 export function isUnauthorisedError(err: HttpError): boolean {
     return err.statusCode === UnauthorisedError.statusCode;
+}
+
+export interface ErrorResponse {
+    message: string;
 }
 
 /*
@@ -73,3 +80,16 @@ export class ConflictError extends HttpError {
     }
 }
 */
+
+export function getErrorFromResponse(axiosResponse: any): HttpError {
+    const errorMessage = (axiosResponse.data as ErrorResponse).message;
+    const statusCode = axiosResponse.statusCode;
+
+    return new HttpError(statusCode, errorMessage, errorMessage);
+}
+
+export function isUnauthorized(apiInstance: EncedeusAPI): HttpError | undefined {
+    if (apiInstance.accessToken.length == 0) {
+        return new HttpError(401, "unauthorized", "unauthorized");
+    }
+}

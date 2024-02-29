@@ -1,11 +1,10 @@
 {
   "name": "@encedeus/js-api",
-  "version": "0.0.82",
+  "version": "0.0.100",
   "main": "./src/index.ts",
   "dependencies": {
     "axios": "^1.4.0",
-    "google-protobuf": "^3.21.2",
-    "ts-proto": "^1.166.2"
+    "google-protobuf": "^3.21.2"
   },
   "type": "module",
   "devDependencies": {
@@ -14,6 +13,8 @@
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "@typescript-eslint/parser": "^5.61.0",
     "prettier": "^3.0.0",
-    "typescript": "^5.1.6"
+    "ts-proto": "^1.167.9",
+    "typescript": "^5.1.6",
+    "ts-protoc-gen": "^0.15.0"
   }
 }
