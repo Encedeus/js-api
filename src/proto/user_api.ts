@@ -51,6 +51,10 @@ export interface UserFindManyResponse {
   users: User[];
 }
 
+export interface UserFindWithRoleResponse {
+  users: User[];
+}
+
 export interface UserChangePasswordRequest {
   userId: UUID | undefined;
   oldPassword: string;
@@ -721,6 +725,63 @@ export const UserFindManyResponse = {
   },
   fromPartial<I extends Exact<DeepPartial<UserFindManyResponse>, I>>(object: I): UserFindManyResponse {
     const message = createBaseUserFindManyResponse();
+    message.users = object.users?.map((e) => User.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseUserFindWithRoleResponse(): UserFindWithRoleResponse {
+  return { users: [] };
+}
+
+export const UserFindWithRoleResponse = {
+  encode(message: UserFindWithRoleResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.users) {
+      User.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserFindWithRoleResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserFindWithRoleResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.users.push(User.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UserFindWithRoleResponse {
+    return { users: globalThis.Array.isArray(object?.users) ? object.users.map((e: any) => User.fromJSON(e)) : [] };
+  },
+
+  toJSON(message: UserFindWithRoleResponse): unknown {
+    const obj: any = {};
+    if (message.users?.length) {
+      obj.users = message.users.map((e) => User.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<UserFindWithRoleResponse>, I>>(base?: I): UserFindWithRoleResponse {
+    return UserFindWithRoleResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<UserFindWithRoleResponse>, I>>(object: I): UserFindWithRoleResponse {
+    const message = createBaseUserFindWithRoleResponse();
     message.users = object.users?.map((e) => User.fromPartial(e)) || [];
     return message;
   },

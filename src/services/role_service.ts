@@ -1,13 +1,13 @@
 import { AxiosInstance } from "axios";
 import {
     BadRequestError,
-    ErrorCheck, ErrorCheckResponse,
+    ErrorCheck, ErrorCheckResponse, getErrorFromResponse,
     HttpError,
     InternalServerError
 } from "./errors";
 import {
     RoleCreateRequest,
-    RoleDeleteRequest,
+    RoleDeleteRequest, RoleFindAllResponse,
     RoleFindOneRequest,
     RoleFindOneResponse,
     RoleUpdateRequest
@@ -106,6 +106,11 @@ export type FindRoleResponse = {
     error?: HttpError;
 }
 
+export type FindAllRolesResponse = {
+    response?: RoleFindAllResponse;
+    error?: HttpError;
+}
+
 export class RoleService {
     private api: AxiosInstance;
 
@@ -142,5 +147,17 @@ export class RoleService {
         const resp = await this.api.delete(`/role/:${deleteReq.id?.value}`).catch(err => err.response);
 
         return isDeleteRoleError(resp.status).error;
+    }
+
+    async findAllRoles(): Promise<FindAllRolesResponse> {
+        const resp = await this.api.get(`/role`).catch(err => err.response);
+
+        if (resp.status == 200) {
+            const response = resp.data as RoleFindAllResponse
+
+            return {response};
+        }
+
+        return {error: getErrorFromResponse(resp)};
     }
 }

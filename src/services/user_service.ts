@@ -1,11 +1,11 @@
 import { AxiosInstance } from "axios";
 import {
     BadRequestError,
-    ErrorCheck, ErrorCheckResponse,
+    ErrorCheck, ErrorCheckResponse, getErrorFromResponse,
     HttpError,
     InternalServerError, UnauthorisedError
 } from "./errors";
-import { RoleNotFoundError } from "./role_service";
+import {FindAllRolesResponse, RoleNotFoundError} from "./role_service";
 import {
     UserChangeEmailRequest,
     UserChangeEmailResponse,
@@ -13,10 +13,11 @@ import {
     UserCreateRequest,
     UserDeleteRequest,
     UserFindOneRequest,
-    UserFindOneResponse,
+    UserFindOneResponse, UserFindWithRoleResponse,
     UserUpdateRequest
 } from "../proto/user_api";
 import { WrongPasswordError } from "./auth_service";
+import {RoleFindAllResponse} from "../proto/role_api";
 
 export const UsernameTakenError = new HttpError(409, "UsernameTakenError", "Username has been taken");
 export const UserNotFoundError = new HttpError(404, "UserNotFoundError", "User not found error");
@@ -196,6 +197,11 @@ export type ChangeEmailResponse = {
     response?: UserChangeEmailResponse;
 }
 
+export type FindAllWithRoleResponse = {
+    error?: HttpError;
+    response?: UserFindWithRoleResponse;
+}
+
 export class UsersService {
     private api: AxiosInstance;
 
@@ -291,5 +297,17 @@ export class UsersService {
         return {
             response: resp.data as UserChangeUsernameResponse,
         };
+    }
+
+    async findAllWithRole(roleId: string): Promise<FindAllWithRoleResponse> {
+        const resp = await this.api.get(`/user/role/${roleId}`).catch(err => err.response);
+
+        if (resp.status == 200) {
+            const response = resp.data as UserFindWithRoleResponse
+
+            return {response};
+        }
+
+        return {error: getErrorFromResponse(resp)};
     }
 }

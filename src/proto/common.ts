@@ -168,6 +168,7 @@ export interface Server {
   storage: string;
   logicalCores: number;
   port: Port | undefined;
+  ipv4: string;
   sftpPassword: string;
 }
 
@@ -1900,6 +1901,7 @@ function createBaseServer(): Server {
     storage: "",
     logicalCores: 0,
     port: undefined,
+    ipv4: "",
     sftpPassword: "",
   };
 }
@@ -1945,8 +1947,11 @@ export const Server = {
     if (message.port !== undefined) {
       Port.encode(message.port, writer.uint32(106).fork()).ldelim();
     }
+    if (message.ipv4 !== "") {
+      writer.uint32(114).string(message.ipv4);
+    }
     if (message.sftpPassword !== "") {
-      writer.uint32(114).string(message.sftpPassword);
+      writer.uint32(122).string(message.sftpPassword);
     }
     return writer;
   },
@@ -2054,6 +2059,13 @@ export const Server = {
             break;
           }
 
+          message.ipv4 = reader.string();
+          continue;
+        case 15:
+          if (tag !== 122) {
+            break;
+          }
+
           message.sftpPassword = reader.string();
           continue;
       }
@@ -2080,6 +2092,7 @@ export const Server = {
       storage: isSet(object.storage) ? globalThis.String(object.storage) : "",
       logicalCores: isSet(object.logicalCores) ? globalThis.Number(object.logicalCores) : 0,
       port: isSet(object.port) ? Port.fromJSON(object.port) : undefined,
+      ipv4: isSet(object.ipv4) ? globalThis.String(object.ipv4) : "",
       sftpPassword: isSet(object.sftpPassword) ? globalThis.String(object.sftpPassword) : "",
     };
   },
@@ -2125,6 +2138,9 @@ export const Server = {
     if (message.port !== undefined) {
       obj.port = Port.toJSON(message.port);
     }
+    if (message.ipv4 !== "") {
+      obj.ipv4 = message.ipv4;
+    }
     if (message.sftpPassword !== "") {
       obj.sftpPassword = message.sftpPassword;
     }
@@ -2153,6 +2169,7 @@ export const Server = {
     message.storage = object.storage ?? "";
     message.logicalCores = object.logicalCores ?? 0;
     message.port = (object.port !== undefined && object.port !== null) ? Port.fromPartial(object.port) : undefined;
+    message.ipv4 = object.ipv4 ?? "";
     message.sftpPassword = object.sftpPassword ?? "";
     return message;
   },
